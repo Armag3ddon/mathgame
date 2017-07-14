@@ -56,6 +56,16 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 			}
 		}
 
+		Controller.prototype.processInput = function(input) {
+			this.entities = this.entities.filter(function(e) {
+				if (e.isHitBy(input)) {
+					console.log('Got One with:', input);
+					return false;
+				}
+				return true;
+			});
+		}
+
 		return Controller;
 	}
 );

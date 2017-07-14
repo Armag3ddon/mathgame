@@ -1,8 +1,8 @@
-define(['basic/rect', 'geo/v2', 'basic/text', 'config/fonts'],
-    function(Rect, V2, TextEntity, f)
+define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
+    function(Entity, V2, TextEntity, f)
     {
         function Enemy(pos, size, color, options) {
-            Rect.call(this, pos, size, color);
+            Entity.call(this, pos, size, color);
 
             var font = f.onscreen;
 
@@ -10,10 +10,12 @@ define(['basic/rect', 'geo/v2', 'basic/text', 'config/fonts'],
             this.text = [options.op_1,options.operator, options.op_2].join('');
             this.display = new TextEntity(Zero(), this.text, font);
 
+            this.result = eval(this.text);
+
             this.add(this.display);
         }
 
-        Enemy.prototype = new Rect();
+        Enemy.prototype = new Entity();
 
         Enemy.prototype.onUpdate = function (delta) {
             var s = delta > 0 ? new V2(this.options.speed.x / delta, this.options.speed.y / delta) : 0;
@@ -22,8 +24,8 @@ define(['basic/rect', 'geo/v2', 'basic/text', 'config/fonts'],
             this.parent.checkEntityForBounds(this, this.position);
         };
 
-        Enemy.prototype.onDraw = function() {
-
+        Enemy.prototype.isHitBy = function(val) {
+            return val === this.result;
         }
 
         return Enemy;
