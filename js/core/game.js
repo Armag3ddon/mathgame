@@ -54,6 +54,7 @@ define(['config/config', 'config/screen', 'config/fonts'],
 
 				this.scene = scene;
 				this.lastUpdate = Date.now();
+				if (scene.loaded) this.scene.loaded();
 				this.loop();
 			},
 

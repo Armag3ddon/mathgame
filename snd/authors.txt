@@ -1,0 +1,6 @@
+menu_music.mp3
+	by bebeto, http://freesound.org/people/bebeto/sounds/554/
+	CC-BY-NC 3.0
+game_music.mp3
+	by edtijo, http://freesound.org/people/edtijo/sounds/240376/
+	CC0
