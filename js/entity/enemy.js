@@ -1,19 +1,19 @@
 define(['basic/rect', 'geo/v2'],
     function(Rect, V2)
     {
-        function Enemy(pos, options) {
-            Rect.call(this);
-            this.position = pos;
-            this.options = options;
-            this.size = new V2(5, 5);
+        function Enemy(pos, size, color, options) {
+            Rect.call(this, pos, size, color);
 
-            console.log('spawned new enemy ', options);
+            this.options = options;
+
+            //console.log('spawned new enemy ', this.options);
         }
 
         Enemy.prototype = new Rect();
 
         Enemy.prototype.onUpdate = function (delta) {
-
+            var s = delta > 0 ? new V2(this.options.speed.x / delta, this.options.speed.y / delta) : 0;
+            this.position.add(s);
         };
 
         return Enemy;
