@@ -50,9 +50,15 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 			this._delay_counter -= delta;
 		};
 
+		// Called when an enemy reaches the bottom line, player should be
+		Controller.prototype.onEnemyReachedBottom = function(entity) {
+			console.log("Looooooser");
+		};
+
 		// Check if an entity is still on a valid screen position, otherwise remove
 		Controller.prototype.checkEntityForBounds = function(entity, position) {
 			if (position.y > this.screen_bounds.p2.y) {
+				this.onEnemyReachedBottom(entity);
 				this.remove(entity);
 			}
 		};
