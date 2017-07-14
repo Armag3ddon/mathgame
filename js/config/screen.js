@@ -1,5 +1,5 @@
 define({
-	w: 800,
-	h: 600,
+	w: 1280,
+	h: 720,
 	scale: true
 });
