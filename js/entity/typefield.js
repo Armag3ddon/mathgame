@@ -11,7 +11,7 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
 			this.blink_speed = 500;
 			this.blink_time = 0;
 			this.max_characters = 7;
-			this.caught_keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'backspace'];
+			this.caught_keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'backspace', 'enter'];
 
 			var font = f.onscreen;
 			font.align = 'left';
@@ -50,8 +50,16 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
 				return true;
 			}
 
-			if (this.text.length >= this.max_characters)
+			if (key == 'enter') {
+				if (this.text.length <= 0)
+					return true;
+				this.parent.processInput (parseInt(this.text));
+				this.text = '';
 				return true;
+			}
+
+			if (this.text.length >= this.max_characters)
+				return true
 			this.text = this.text + key;
 			return true;
 		};

@@ -13,9 +13,14 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
 				this.keyAware.push(this.typefield);
 
 				this.bg = 'img/background.jpg';
+				document.getElementById('game_music').play();
 			}
 
 			PlayScene.prototype = new Scene();
+
+			PlayScene.prototype.processInput = function (input) {
+				this.controller.processInput(input);
+			}
 
 			return PlayScene;
 		}
