@@ -4,6 +4,7 @@ define(['lib/scene', 'geo/v2', 'entity/controller'],
 				Scene.call(this);
 
 				this.controller = new Controller(Zero());
+				this.add(this.controller);
 			}
 
 			PlayScene.prototype = new Scene();
