@@ -17,6 +17,13 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 				spawn_delay : 2000
 			};
 
+			this.statistics = {
+				score : 0,
+				solved : 0,
+				lost : 0,
+				time : 0
+			};
+
 			// the screen is x0,y0 295/18 and x1,y1 983/407
 			// - some space for the input field and bar
 			this.screen_bounds = Rect.create(295, 18, 983, 380);
@@ -48,11 +55,14 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 			}
 
 			this._delay_counter -= delta;
+			this.statistics.time += delta;
 		};
 
 		// Called when an enemy reaches the bottom line, player should be
 		Controller.prototype.onEnemyReachedBottom = function(entity) {
-			console.log("Looooooser");
+			console.log("You got hit by: a smooth criminal");
+			this.statistics.lost += 1;
+			console.log(this.statistics);
 		};
 
 		// Check if an entity is still on a valid screen position, otherwise remove
@@ -67,11 +77,14 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 		Controller.prototype.processInput = function(input) {
 			this.entities = this.entities.filter(function(e) {
 				if (e.isHitBy(input)) {
+					this.statistics.score += e.result;
+					this.statistics.solved += 1;
 					console.log('Got One with:', input);
+					console.log(this.statistics);
 					return false;
 				}
 				return true;
-			});
+			}.bind(this));
 		};
 
 		// get the start position for an enitiy randomly inside the screen rect on top
