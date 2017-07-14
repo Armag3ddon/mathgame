@@ -14,6 +14,8 @@ define(['basic/rect', 'geo/v2'],
         Enemy.prototype.onUpdate = function (delta) {
             var s = delta > 0 ? new V2(this.options.speed.x / delta, this.options.speed.y / delta) : 0;
             this.position.add(s);
+
+            this.parent.checkEntityForBounds(this, this.position);
         };
 
         return Enemy;
