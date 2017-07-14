@@ -28,21 +28,22 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 
 		Controller.prototype.onUpdate = function (delta) {
 
-			var enemy_speed_x = 0; // betweenInt(-10, 10)
+			var enemy_speed_x = 0;
 			var enemy_speed_y = betweenInt(5, 20); // todo multiply with game phase speed
 
 			if (this._delay_counter <= 0) {
 				var enemy_options = {
 					speed : new V2(enemy_speed_x, enemy_speed_y),
-					op_1 : betweenInt(1, 10),
-					op_2 : betweenInt(1, 10),
-					operator : OPERATORS[betweenInt(0, OPERATORS.length - 1)]
+					operator : OPERATORS[betweenInt(0, OPERATORS.length)]
 				};
 
-				var initial_position = new V2(betweenInt(295, 983), 18);
-				var size = new V2(30, 30);
+				var op_values = this.getValues(enemy_options.operator);
+				enemy_options.op_1 = op_values.op_1;
+				enemy_options.op_2 = op_values.op_2;
 
-				this.add(new Enemy(initial_position, size, undefined, enemy_options));
+				var initial_position = this.getStartPosition();
+
+				this.add(new Enemy(initial_position, Zero(), undefined, enemy_options));
 				this._delay_counter = this.game_settings.spawn_delay;
 			}
 
@@ -54,8 +55,9 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 			if (position.y > this.screen_bounds.p2.y) {
 				this.remove(entity);
 			}
-		}
+		};
 
+		// filters the entities
 		Controller.prototype.processInput = function(input) {
 			this.entities = this.entities.filter(function(e) {
 				if (e.isHitBy(input)) {
@@ -64,7 +66,40 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 				}
 				return true;
 			});
-		}
+		};
+
+		// get the start position for an enitiy randomly inside the screen rect on top
+		Controller.prototype.getStartPosition = function() {
+			var x_offset_to_composate_width = 50;
+			return new V2(betweenInt(this.screen_bounds.p1.x, this.screen_bounds.p2.x - x_offset_to_composate_width),
+				this.screen_bounds.p1.y);
+		};
+
+		Controller.prototype.getValues = function(operator) {
+			switch (operator) {
+				case '+':
+					return this.getValuesForAddition();
+				case '-':
+					return this.getValuesForSubtraction();
+			}
+		};
+
+		Controller.prototype.getValuesForAddition = function() {
+			return {
+				op_1 : betweenInt(1, 10),
+				op_2 : betweenInt(1, 10)
+			};
+		};
+
+		Controller.prototype.getValuesForSubtraction = function() {
+			var op1 = betweenInt(1, 10),
+				op2 = betweenInt(1, 10);
+
+			return {
+				op_1 : op1 > op2 ? op1 : op2,
+				op_2 : op1 > op2 ? op2 : op1
+			};
+		};
 
 		return Controller;
 	}
