@@ -8,7 +8,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
 				this.controller = new Controller(Zero());
 				this.add(this.controller);
 
-				this.typefield = new TypeField(new V2(200, 650));
+				this.typefield = new TypeField(new V2(310, 380));
 				this.add(this.typefield);
 				this.keyAware.push(this.typefield);
 
