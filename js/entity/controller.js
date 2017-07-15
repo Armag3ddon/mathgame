@@ -2,7 +2,8 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 	function(Entity, V2, Rect, Enemy, Boss, R, game)
 	{
 		var between = R.betweenInt;
-		var OPERATORS = ['+', '-', '*', '/'];
+		var ALL_OPERATORS = ['+', '-', '*', '/'],
+			OPERATORS = ALL_OPERATORS;
 
 		var OP_GENERATORS = {
 			'+' : function() {
@@ -105,6 +106,10 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		Controller.prototype = new Entity();
 
 		Controller.prototype.onUpdate = function (delta) {
+			OPERATORS = ALL_OPERATORS.filter(function(o, i) {
+				return game.operations[i];
+			});
+
 			if (this._enemy_delay <= 0 && !this._boss_active) {
 				this.spawnEnemy();
 				this._enemy_delay = this.game_settings.enemy_delay;
@@ -142,6 +147,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				ops.push(getRandomOp(this.game_settings.nr_of_operations()));
 			}
 
+			// center bosses
 			var start_pos = new V2(this.screen_bounds.p1.x + 250, this.screen_bounds.p1.y);
 
 			this.add(new Boss(start_pos, {
