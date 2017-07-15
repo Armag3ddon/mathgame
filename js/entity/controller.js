@@ -1,13 +1,8 @@
 define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random'],
-	function(Entity, V2, Rect, Enemy, Random)
+	function(Entity, V2, Rect, Enemy, R)
 	{
 		var OPERATORS = ['+', '-', '*', '/'];
-
-
-
-		var betweenInt = function(min, max) {
-			return parseInt(Math.random() * (max-min) + min, 10);
-		};
+		var between = R.betweenInt;
 
 		function Controller(pos) {
 			Entity.call(this);
@@ -36,12 +31,12 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 		Controller.prototype.onUpdate = function (delta) {
 
 			var enemy_speed_x = 0;
-			var enemy_speed_y = betweenInt(5, 20); // todo multiply with game phase speed
+			var enemy_speed_y = between(5, 20); // todo multiply with game phase speed
 
 			if (this._delay_counter <= 0) {
 				var enemy_options = {
 					speed : new V2(enemy_speed_x, enemy_speed_y),
-					operator : OPERATORS[betweenInt(0, OPERATORS.length)]
+					operator : OPERATORS[between(0, OPERATORS.length)]
 				};
 
 				var op_values = this.getValues(enemy_options.operator);
@@ -62,6 +57,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 		Controller.prototype.onEnemyReachedBottom = function(entity) {
 			console.log("You got hit by: a smooth criminal");
 			this.statistics.lost += 1;
+			this.parent.triggerRandomEvent();
 			console.log(this.statistics);
 		};
 
@@ -90,7 +86,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 		// get the start position for an enitiy randomly inside the screen rect on top
 		Controller.prototype.getStartPosition = function() {
 			var x_offset_to_composate_width = 50;
-			return new V2(betweenInt(this.screen_bounds.p1.x, this.screen_bounds.p2.x - x_offset_to_composate_width),
+			return new V2(between(this.screen_bounds.p1.x, this.screen_bounds.p2.x - x_offset_to_composate_width),
 				this.screen_bounds.p1.y);
 		};
 
@@ -109,14 +105,14 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 
 		Controller.prototype.getValuesForAddition = function() {
 			return {
-				op_1 : betweenInt(1, 10),
-				op_2 : betweenInt(1, 10)
+				op_1 : between(1, 10),
+				op_2 : between(1, 10)
 			};
 		};
 
 		Controller.prototype.getValuesForSubtraction = function() {
-			var op1 = betweenInt(1, 10),
-				op2 = betweenInt(1, 10);
+			var op1 = between(1, 10),
+				op2 = between(1, 10);
 
 			return {
 				op_1 : op1 > op2 ? op1 : op2,
@@ -130,8 +126,8 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 
 		// make division always be without fractions
 		Controller.prototype.getValuesForDivision = function() {
-			var op1 = betweenInt(1, 10),
-				op2 = betweenInt(1, 10);
+			var op1 = between(1, 10),
+				op2 = between(1, 10);
 
 			return {
 				op_1 : op1 * op2,

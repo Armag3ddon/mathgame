@@ -13,6 +13,10 @@ define(['geo/v2'], function(V2) {
 						typeof y == 'function' ? y() : y
 				);
 			}
+		},
+
+		betweenInt : function(min, max) {
+			return parseInt(Math.random() * (max-min) + min, 10);
 		}
 	};
 });
