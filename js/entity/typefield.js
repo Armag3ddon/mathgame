@@ -1,6 +1,8 @@
-define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
-	function(Entity, V2, TextEntity, f)
+define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts', 'core/sound'],
+	function(Entity, V2, TextEntity, f, s)
 	{
+		s.add('snd/typing.mp3');
+
 		function TypeField(pos) {
 			Entity.call(this);
 			this.position = pos;
@@ -61,6 +63,7 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
 			if (this.text.length >= this.max_characters)
 				return true
 			this.text = this.text + key;
+			s.play('snd/typing.mp3');
 			return true;
 		};
 

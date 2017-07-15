@@ -1,4 +1,4 @@
-define( function() {
+define(['core/game'], function(game) {
 	return {
 		sampels: [],
 				urls: [],
@@ -11,11 +11,13 @@ define( function() {
 
 		if( this.sampels[file].length ) {
 			var sample = this.sampels[file].pop();
+			sample.volume = game.sound_volume / 100;
 			sample.play();
 			return sample;
 		} else {
 			var sample = new Audio( file );
 			sample.onended = function() { self.sampels[file].push( this ); };
+			sample.volume = game.sound_volume / 100;
 			sample.play();
 			return sample;
 		}

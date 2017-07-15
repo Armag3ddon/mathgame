@@ -1,6 +1,7 @@
-define(['basic/entity', 'geo/v2', 'basic/text', 'basic/image', 'lib/animation', 'config/fonts', 'core/graphic'],
-	function(Entity, V2, TextEntity, ImageEntity, AnimationEntity, f, g) {
+define(['basic/entity', 'geo/v2', 'basic/text', 'basic/image', 'lib/animation', 'config/fonts', 'core/graphic', 'core/sound'],
+	function(Entity, V2, TextEntity, ImageEntity, AnimationEntity, f, g, s) {
 		g.add('img/checkbox.png');
+		s.add('snd/click.mp3');
 
 		function Checkbox(pos, text, checked, func) {
 			Entity.call(this);
@@ -31,6 +32,7 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'basic/image', 'lib/animation', 
 			}
 			if (this.action)
 				this.action(this.checked);
+				s.play('snd/click.mp3');
 		};
 
 		return Checkbox;

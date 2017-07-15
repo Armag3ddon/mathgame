@@ -1,6 +1,9 @@
-define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'definition/random', 'core/game', 'config/fonts'],
-	function(Entity, V2, Rect, Enemy, Boss, R, game, f)
+define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'definition/random', 'core/game', 'config/fonts', 'core/sound'],
+	function(Entity, V2, Rect, Enemy, Boss, R, game, f, s)
 	{
+		s.add('snd/correct_answer.mp3');
+		s.add('snd/wrong_answer.mp3');
+
 		var between = R.betweenInt;
 		var OPERATORS = ['+', '-', '*', '/'];
 
@@ -105,6 +108,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this._boss_active = false;
 
 			this.dieing = [];
+			this.hit_buffer = 0;
 
 			this._diff_change = this.game_settings.diff_change_time;
 			this._current_diff = 0;
@@ -139,6 +143,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this._diff_change -= delta;
 
 			this.dispatch(this.dieing, 'update', delta);
+			this.hit_buffer = 0;
 		};
 
 		Controller.prototype.onDraw = function(ctx) {
@@ -224,6 +229,8 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				}
 				return true;
 			}.bind(this));
+			if (this.hit_buffer == 0)
+				s.play('snd/wrong_answer.mp3');
 		};
 
 		// get the start position for an enitiy randomly inside the screen rect on top
@@ -235,6 +242,9 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 		Controller.prototype.addToDieing = function (enemy) {
 			this.dieing.push (enemy);
+			if (this.hit_buffer == 0)
+				s.play('snd/correct_answer.mp3');
+			this.hit_buffer++;
 		};
 
 		Controller.prototype.removeFromDieing = function (enemy) {

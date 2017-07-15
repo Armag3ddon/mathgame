@@ -4,3 +4,12 @@ menu_music.mp3
 game_music.mp3
 	by edtijo, http://freesound.org/people/edtijo/sounds/240376/
 	CC0
+click.mp3
+	by Masgame, http://freesound.org/people/Masgame/sounds/347544/
+	CC0
+typing.mp3, correct_answer.mp3
+	by Joshun, http://freesound.org/people/Joshun/sounds/147798/
+	CC-BY 3.0
+wrong_answer.mp3
+	by Autistic Lucario, http://freesound.org/people/Autistic%20Lucario/sounds/142608/
+	CC-BY 3.0
