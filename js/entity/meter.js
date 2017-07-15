@@ -26,7 +26,7 @@ function(Entity, V2, TextEntity, ImageEntity, mouse, g, f, game) {
 		this.callback = callback;
 		this.fixedPositions = fixedPositions;
 		this.fixedTexts = fixedTexts;
-		if (startVal)
+		if (startVal != undefined)
 			this.setMeter(fixedPositions[startVal]);
 		else
 			this.setMeter(100);
