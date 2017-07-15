@@ -1,7 +1,12 @@
-define(['lib/scene', 'basic/button', 'basic/text', 'config/fonts', 'core/game', 'geo/v2', 'transitions/slideinright', 'transitions/slideinleft', 'basic/morph', 'definition/easing', 'basic/layout', 'entity/meter', 'entity/back', 'entity/checkbox'],
-	function(Scene, Button, TextEntity, f, game, V2, SlideInRightTransition, SlideInLeftTransition, Morph, Easing, Layout, Meter, BackButton, Checkbox) {
+define(['lib/scene', 'basic/button', 'basic/text', 'config/fonts', 'core/game', 'geo/v2', 'transitions/slideinright', 'transitions/slideinleft', 'basic/morph', 'definition/easing', 'basic/layout', 'entity/meter', 'entity/back', 'entity/checkbox', 'core/graphic'],
+	function(Scene, Button, TextEntity, f, game, V2, SlideInRightTransition, SlideInLeftTransition, Morph, Easing, Layout, Meter, BackButton, Checkbox, g) {
+
+		g.add('img/menu_bg.png');
+
 		function OptionsScene() {
 			Scene.call(this);
+
+			this.bg = 'img/menu_bg.png';
 
 			var y = 75;
 			var x = 50;
