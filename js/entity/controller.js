@@ -109,8 +109,12 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				this._boss_active = true;
 			}
 
-			this._boss_delay -= delta;
-			this._enemy_delay -= delta;
+			// having an active boss doesn't trigger new objects
+			if (!this._boss_active) {
+				this._boss_delay -= delta;
+				this._enemy_delay -= delta;
+			}
+
 			this.statistics.time += delta;
 		};
 
@@ -143,6 +147,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			if (entity.isBoss()) {
 				console.log("You got hit by: a boss!");
 				this._boss_active = false;
+				this._boss_delay = this.game_settings.boss_delay;
 				this.statistics.boss_lost += 1;
 			} else {
 				console.log("You got hit by: a dude");
@@ -173,6 +178,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 						this.statistics.boss_solved += 1;
 						console.log('Boss kill!');
 						this._boss_active = false;
+						this._boss_delay = this.game_settings.boss_delay;
 					} else {
 						this.statistics.enemy_solved += 1;
 					}
