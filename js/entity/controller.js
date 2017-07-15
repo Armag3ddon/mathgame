@@ -60,7 +60,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				// spawn am enemy every ms
 				enemy_delay : 2000,
 				// spawn a boss every ms
-				boss_delay: 3000,
+				boss_delay: 20000,
 				// nr od operations for a boss
 				boss_ops : 2,
 				// speed (x and y direction)
@@ -103,7 +103,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				this._enemy_delay = this.game_settings.enemy_delay;
 			}
 
-			if (this._boss_delay <= 0) {
+			if (this._boss_delay <= 0 && !this._boss_active) {
 				this.spawnBoss();
 				this._boss_delay = this.game_settings.boss_delay;
 				this._boss_active = true;

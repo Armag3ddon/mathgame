@@ -2,27 +2,27 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
 		function(Scene, V2, g, Controller, TypeField, Animation, R) {
             var between = R.betweenInt;
 
-			g.add('img/background wip.jpg');
-            g.add('img/programmer_spritesheet.png');
+			g.add('img/background.png');
+            g.add('img/programmer_spritesheet_glow.png');
             g.add('img/tentacel_spritesheet.png');
 
             var programmer_states = {
                 normal : {
-                    anim : 'img/programmer_spritesheet.png',
+                    anim : 'img/programmer_spritesheet_glow.png',
                     speed: 150,
-                    pos :  new V2(520, 374),
+                    pos :  new V2(461, 360),
                     blink_speed: 500
                 },
                 excited : {
-                    anim : 'img/programmer_spritesheet.png',
+                    anim : 'img/programmer_spritesheet_glow.png',
                     speed: 70,
-                    pos :  new V2(520, 374),
+                    pos :  new V2(461, 360),
                     blink_speed: 250
                 },
                 panic : {
-                    anim : 'img/programmer_spritesheet.png',
+                    anim : 'img/programmer_spritesheet_glow.png',
                     speed: 30,
-                    pos :  new V2(520, 374),
+                    pos :  new V2(461, 360),
                     blink_speed: 100
                 }
             };
@@ -37,7 +37,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
 				this.add(this.typefield);
 				this.keyAware.push(this.typefield);
 
-				this.bg = 'img/background wip.jpg';
+				this.bg = 'img/background.png';
 
                 this.programmer = null;
                 this.setStateForProgrammer("normal");
@@ -46,8 +46,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
                     tentacles : {
                         anim : 'img/tentacel_spritesheet.png',
                         speed: 100,
-                        images: 30,
-                        pos :  new V2(50, 200)
+                        images: 32,
+                        pos :  new V2(103, 227)
                     }
                 };
 
