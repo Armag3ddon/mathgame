@@ -1,5 +1,5 @@
-define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'definition/random', 'core/game', 'config/fonts', 'core/sound', 'entity/left_monitor'],
-	function(Entity, V2, Rect, Enemy, Boss, R, game, f, s, LeftMonitor)
+define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'definition/random', 'core/game', 'config/fonts', 'core/sound', 'entity/left_monitor', 'entity/right_monitor'],
+	function(Entity, V2, Rect, Enemy, Boss, R, game, f, s, LeftMonitor, RightMonitor)
 	{
 		s.add('snd/correct_answer.mp3');
 		s.add('snd/wrong_answer.mp3');
@@ -113,10 +113,10 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this._diff_change = this.game_settings.diff_change_time;
 			this._current_diff = 0;
 
-			this.left_monitor = new LeftMonitor(new V2(515, 478), {
-
-			});
-			this.add(this.left_monitor);
+			this.add(new LeftMonitor(new V2(515, 478), {}));
+			this.add(new RightMonitor(new V2(760, 478), {
+				size : new V2(200, 50)
+			}));
 		}
 
 		Controller.prototype = new Entity();
@@ -271,13 +271,17 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 					val : between(1, 75)
 				};
 			}
-			
+
 			var r = between(0, enemies_on_screen.length);
 
 			return {
 				real : true,
 				val : enemies_on_screen[r].result
 			};
+		};
+
+		Controller.prototype.getNewComboModifier = function() {
+			return '+';
 		};
 
 		return Controller;
