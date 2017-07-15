@@ -1,6 +1,7 @@
 define(['basic/entity', 'core/graphic', 'geo/v2'],
 		function (Entity, graphics, V2) {
-			function Animation( img, pos, frames, speed, loop ) {
+			function Animation(id, img, pos, frames, speed, loop ) {
+				this.id = id;
 				this.frames = typeof frames == 'number' ? new V2(frames, 1) : frames;
 				this.img = graphics[img];
 				this.loop = loop;
@@ -16,6 +17,9 @@ define(['basic/entity', 'core/graphic', 'geo/v2'],
 			Animation.prototype = new Entity();
 
 			Animation.prototype.onUpdate = function(delta) {
+				if (this.duration == 0)
+					return;
+
 				this.anitime += delta;
 				this.frame = Math.floor( this.anitime / this.duration );
 
@@ -28,6 +32,10 @@ define(['basic/entity', 'core/graphic', 'geo/v2'],
 
 			Animation.prototype.onDraw = function(ctx) {
 				ctx.drawImage( this.img, this.frame*this.size.x, this.state*this.size.y, this.size.x, this.size.y, 0, 0, this.size.x, this.size.y );
+			};
+
+			Animation.prototype.isAnimation = function() {
+				return true;
 			};
 
 			return Animation;
