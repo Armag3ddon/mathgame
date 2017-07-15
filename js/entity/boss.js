@@ -4,13 +4,25 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
 
         // A boss has multiple calculations that have to be solved
         // and does not go away until all solved
-        function Boss(pos, size, color, options) {
-            Entity.call(this, pos, size, color);
+        function Boss(pos, options) {
+            Entity.call(this, pos);
 
             var font = f.onscreen;
 
             this.options = options;
-            this.text = [options.op_1,options.operator, options.op_2].join('');
+
+            this.operations = options.operations;
+
+            this.text = '';
+            this.operations.forEach(function(op) {
+                this.text += ['(', op.op_1, op.operator, op.op_2, ')', '+'].join('');
+            }.bind(this));
+
+            // remove trailing +
+            this.text = this.text.substr(0, this.text.length - 1);
+
+            console.log(this.text);
+
             this.display = new TextEntity(Zero(), this.text, font);
 
             this.result = eval(this.text);
@@ -19,6 +31,10 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
         }
 
         Boss.prototype = new Entity();
+
+        Boss.prototype.isBoss = function() {
+            return true;
+        };
 
         Boss.prototype.onUpdate = function (delta) {
             var s = delta > 0 ? new V2(this.options.speed.x / delta, this.options.speed.y / delta) : 0;
@@ -31,6 +47,6 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
             return val === this.result;
         };
 
-        return Enemy;
+        return Boss;
     }
 );

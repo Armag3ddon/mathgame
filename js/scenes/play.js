@@ -6,7 +6,28 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
             g.add('img/programmer_spritesheet.png');
             g.add('img/tentacel_spritesheet.png');
 
-			function PlayScene() {
+            var programmer_states = {
+                normal : {
+                    anim : 'img/programmer_spritesheet.png',
+                    speed: 150,
+                    pos :  new V2(520, 374),
+                    blink_speed: 500
+                },
+                excited : {
+                    anim : 'img/programmer_spritesheet.png',
+                    speed: 70,
+                    pos :  new V2(520, 374),
+                    blink_speed: 250
+                },
+                panic : {
+                    anim : 'img/programmer_spritesheet.png',
+                    speed: 30,
+                    pos :  new V2(520, 374),
+                    blink_speed: 100
+                }
+            };
+
+            function PlayScene() {
 				Scene.call(this);
 
 				this.controller = new Controller(Zero());
@@ -18,28 +39,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
 
 				this.bg = 'img/background wip.jpg';
 
-                var programmer_states = {
-                    normal : {
-                        anim : 'img/programmer_spritesheet.png',
-                        speed: 100,
-                        pos :  new V2(520, 374)
-                    },
-                    excited : {
-                        anim : 'img/programmer_spritesheet.png',
-                        speed: 30,
-                        pos :  new V2(520, 374)
-                    },
-                    paniced : {
-                        anim : 'img/programmer_spritesheet.png',
-                        speed: 1,
-                        pos :  new V2(520, 374)
-                    }
-                };
-
-                this.programmer_state = "normal";
-                this.programmer = programmer_states[this.programmer_state];
-
-                this.add(new Animation(this.programmer.anim, this.programmer.pos, 12, this.programmer.speed, true));
+                this.programmer = null;
+                this.setStateForProgrammer("normal");
 
                 this.events = {
                     tentacles : {
@@ -65,6 +66,15 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
                 this.event = this.events[evts[r]];
 
                 this.add(new Animation(this.event.anim, this.event.pos, this.event.images, this.event.speed, false))
+            };
+
+            PlayScene.prototype.setStateForProgrammer = function(state_name) {
+                this.programmer = programmer_states[state_name];
+                this.typefield.blink_speed = this.programmer.blink_speed;
+
+                this.remove(this.programmer_anim);
+                this.programmer_anim = new Animation(this.programmer.anim, this.programmer.pos, 12, this.programmer.speed, true);
+                this.add(this.programmer_anim);
             };
 
 			return PlayScene;
