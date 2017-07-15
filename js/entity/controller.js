@@ -260,19 +260,18 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 		// returns a random number or a real result from on screen enemies
 		Controller.prototype.getNumberForMonitor = function() {
-			var w20 = between(1, 20);
+			var w20 = between(1, 20),
+				enemies_on_screen = this.entities.filter(function(e) {
+					return typeof e.isBoss === 'function';
+				});
 
-			if (w20 < 15) {
+			if (w20 < 15 || enemies_on_screen.length === 0) {
 				return {
 					real: false,
 					val : between(1, 75)
 				};
 			}
-
-			var enemies_on_screen = this.entities.filter(function(e) {
-				return typeof e.isBoss === 'function';
-			});
-
+			
 			var r = between(0, enemies_on_screen.length);
 
 			return {
