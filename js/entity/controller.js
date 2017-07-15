@@ -111,7 +111,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 
 		// Check if an entity is still on a valid screen position, otherwise remove
 		Controller.prototype.checkEntityForBounds = function(entity, position) {
-			if (position.y > this.game_settings.hit_line_pos) {
+			if (position.y > this.game_settings.hit_line_pos()) {
 				this.onEnemyReachedBottom(entity);
 				this.remove(entity);
 			}
