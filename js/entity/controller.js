@@ -4,9 +4,11 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		s.add('snd/correct_answer.mp3');
 		s.add('snd/wrong_answer.mp3');
 		s.add('snd/fail.mp3');
+		s.add('snd/combo.mp3');
 
 		var between = R.betweenInt;
-		var OPERATORS = ['+', '-', '*', '/'];
+		var ALL_OPERATORS = ['+', '-', '*', '/'];
+		var OPERATORS = ALL_OPERATORS;
 
 		var OP_GENERATORS = {
 			'+' : function() {
@@ -128,6 +130,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 			this.dieing = [];
 			this.hit_buffer = 0;
+			this.music_timeout = 0;
 
 			this._diff_change = this.game_settings.diff_change_time;
 			this._current_diff = 0;
@@ -139,7 +142,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 			this.current_combo_modifier = '+';
 
-			this.total_health_percent = 1;
+			this.total_health_percent = 100;
 			this._shield_down_delay = this.game_settings.shield_down_delay;
 
 		}
@@ -147,6 +150,18 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		Controller.prototype = new Entity();
 
 		Controller.prototype.onUpdate = function (delta) {
+			OPERATORS = ALL_OPERATORS.filter(function(o, i) {
+				return game.operations[i];
+			});
+
+			if (this.music_timeout > 0) {
+				this.music_timeout -= delta;
+				if (this.music_timeout <= 0) {
+					this.music_timeout = 0;
+					document.getElementById('game_music').play();
+				}
+			}
+
 			if (this._enemy_delay <= 0 && !this._boss_active) {
 				this.spawnEnemy();
 				this._enemy_delay = this.game_settings.enemy_delay;
@@ -229,7 +244,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				ops.push(getRandomOp(this.game_settings.nr_of_operations()));
 			}
 
-			this.add(new Boss(this.getStartPosition(), {
+			this.add(new Boss(this.getStartPosition(true), {
 				speed : this.game_settings.boss_speed(),
 				operations : ops
 			}));
@@ -299,8 +314,11 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		};
 
 		// get the start position for an enitiy randomly inside the screen rect on top
-		Controller.prototype.getStartPosition = function() {
+		Controller.prototype.getStartPosition = function(narrow) {
 			var x_offset_to_composate_width = 50;
+			if (narrow)
+				return new V2(between(this.screen_bounds.p1.x + x_offset_to_composate_width, this.screen_bounds.p2.x - x_offset_to_composate_width*2),
+					this.screen_bounds.p1.y + f.onscreen.size/2);
 			return new V2(between(this.screen_bounds.p1.x, this.screen_bounds.p2.x - x_offset_to_composate_width),
 				this.screen_bounds.p1.y + f.onscreen.size/2);
 		};
@@ -373,7 +391,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 			if (found) {
 				dead.forEach(function(e) {
-					e.dead = true;
+					e.death();
 				}.bind(this));
 			}
 
@@ -381,7 +399,9 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		};
 
 		Controller.prototype.showComboWonAnimation = function() {
-			console.log("Combo Combo !");
+			s.play('snd/combo.mp3');
+			this.music_timeout = 4180;
+			document.getElementById('game_music').pause();
 		};
 
 		Controller.prototype.gameOver = function() {
