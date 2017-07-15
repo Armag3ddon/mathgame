@@ -92,12 +92,30 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				},
 
 				// all x seconds we make it harder
-				diff_change_time : 10000
+				diff_change_time : 10000,
+
+				// shield_down_delay
+				shield_down_delay : 1000,
+
+				// hits per time unit
+				shield_down_damage_percent : 1,
+
+				// enemy make extra damage
+				enemy_shield_down_damage : 2,
+
+				// enemys fill up the shields by this amount
+				enemy_shield_health : 4,
+
+				// bosses makes even more damage
+				boss_shield_down_damage : 7,
+
+				// but they also heal the shield much
+				boss_shield_health : 20
 			};
 
 			this.statistics = {
 				score : 0,
-				enemy_solved : 0,
+				enemy_solved : 1,
 				enemy_lost : 0,
 				time : 0,
 				boss_solved: 0,
@@ -120,6 +138,10 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			}));
 
 			this.current_combo_modifier = '+';
+
+			this.total_health_percent = 100;
+			this._shield_down_delay = this.game_settings.shield_down_delay;
+
 		}
 
 		Controller.prototype = new Entity();
@@ -147,8 +169,20 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				this._enemy_delay -= delta;
 			}
 
+			if (this._shield_down_delay <= 0) {
+				this.total_health_percent -= this.game_settings.shield_down_damage_percent;
+				this._shield_down_delay = this.game_settings.shield_down_delay;
+				console.log("Sir, shields down to " + this.total_health_percent + " Percent !");
+				if (this.total_health_percent < 0) {
+					this.gameOver();
+				}
+			}
+
+			this.total_health_percent = Math.max(Math.min(this.total_health_percent, 100), 0);
+
 			this.statistics.time += delta;
 			this._diff_change -= delta;
+			this._shield_down_delay -= delta;
 
 			this.dispatch(this.dieing, 'update', delta);
 			this.hit_buffer = 0;
@@ -197,10 +231,12 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				console.log("You got hit by: a boss!");
 				this._boss_active = false;
 				this._boss_delay = this.game_settings.boss_delay;
+				this.total_health_percent -= this.game_settings.boss_shield_down_damage;
 				this.statistics.boss_lost += 1;
 			} else {
-				console.log("You got hit by: a dude");
+				console.log("You got hit by: a girl or boy or other dude");
 				this.statistics.enemy_lost += 1;
+				this.total_health_percent -= this.game_settings.enemy_shield_down_damage;
 				s.play('snd/fail.mp3');
 			}
 
@@ -232,7 +268,9 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 						console.log('Boss kill!');
 						this._boss_active = false;
 						this._boss_delay = this.game_settings.boss_delay;
+						this.total_health_percent += this.game_settings.boss_shield_health;
 					} else {
+						this.total_health_percent += this.game_settings.enemy_shield_health;
 						this.statistics.enemy_solved += 1;
 					}
 
@@ -314,8 +352,12 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 						dead.push(e1);
 						dead.push(e2);
 						found = true;
+						break;
 					}
 				}
+
+				if (found)
+					break;
 			}
 
 			if (found) {
@@ -329,6 +371,11 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 		Controller.prototype.showComboWonAnimation = function() {
 			console.log("Combo Combo !");
+		};
+
+		Controller.prototype.gameOver = function() {
+			console.log("Game Lost");
+			throw "Game Over not implemnted!"
 		};
 
 
