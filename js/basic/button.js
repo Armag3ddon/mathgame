@@ -6,9 +6,28 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'basic/rect', 'basic/image'],
 					callback(p);
 					return true;
 				}
+				this.hovered = false;
 			}
 
 			Button.prototype = new Entity();
+
+			Button.prototype.onUpdate = function (delta) {
+				if (this.hover_img) {
+					if (this.hovered && this.hover())
+						return;
+					if (!this.hovered && !this.hover())
+						return;
+					if (this.hovered) {
+						this.remove(this.hover_img);
+						this.add(this.img);
+						this.hovered = false;
+					} else {
+						this.remove(this.img);
+						this.add(this.hover_img);
+						this.hovered = true;
+					}
+				}
+			};
 
 			Button.prototype.onMouseDown = function() {
 				return true;
@@ -36,7 +55,16 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'basic/rect', 'basic/image'],
 				var img = new ImageEntity(Zero(), src, scale);
 				this.size.x = Math.max(img.size.x, this.size.x);
 				this.size.y = Math.max(img.size.y, this.size.y);
+				this.img = img;
 				this.add(img);
+				return this;
+			};
+
+			Button.prototype.hoverImg = function(src, scale) {
+				var img = new ImageEntity(Zero(), src, scale);
+				this.size.x = Math.max(img.size.x, this.size.x);
+				this.size.y = Math.max(img.size.y, this.size.y);
+				this.hover_img = img;
 				return this;
 			};
 
