@@ -27,6 +27,8 @@ define(['config/config', 'config/screen', 'config/fonts'],
 
 			text_speed: 0,
 
+			operations: [true, true, true, true], // +, -, x, /
+
 			resize: function() {
 				var fw = window.innerWidth / screen.w;
 				var fh = window.innerHeight / screen.h;

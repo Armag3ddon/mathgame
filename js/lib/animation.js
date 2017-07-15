@@ -17,6 +17,9 @@ define(['basic/entity', 'core/graphic', 'geo/v2'],
 			Animation.prototype = new Entity();
 
 			Animation.prototype.onUpdate = function(delta) {
+				if (this.duration == 0)
+					return;
+
 				this.anitime += delta;
 				this.frame = Math.floor( this.anitime / this.duration );
 
