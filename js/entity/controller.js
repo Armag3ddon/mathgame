@@ -1,15 +1,67 @@
 define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random'],
 	function(Entity, V2, Rect, Enemy, R)
 	{
-		var OPERATORS = ['+', '-', '*', '/'];
 		var between = R.betweenInt;
+		var OPERATORS = ['+', '-', '*', '/'];
+
+		var OP_GENERATORS = {
+			'+' : function() {
+				return {
+					op_1 : between(1, 10),
+					op_2 : between(1, 10)
+				};
+			},
+			'-': function() {
+				var op1 = between(1, 10),
+					op2 = between(1, 10);
+
+				return {
+					op_1 : op1 > op2 ? op1 : op2,
+					op_2 : op1 > op2 ? op2 : op1
+				};
+			},
+			'*': function() {
+				return {
+					op_1 : between(1, 10),
+					op_2 : between(1, 10)
+				};
+			},
+			'/': function() {
+				var op1 = between(1, 10),
+					op2 = between(1, 10);
+
+				return {
+					op_1 : op1 * op2,
+					op_2 : op2
+				};
+			}
+		};
 
 		function Controller(pos) {
 			Entity.call(this);
 			this.position = pos;
 
+			// the screen is x0,y0 295/18 and x1,y1 983/407
+			// - some space for the input field and bar
+			this.screen_bounds = Rect.create(295, 18, 983, 380);
+
 			this.game_settings = {
-				spawn_delay : 2000
+				// spawn am enemy every ms
+				enemy_delay : 2000,
+				// spawn a boss every ms
+				boss_delay: 20000,
+				// speed
+				enemy_speed : function() {
+					return between(5, 20);
+				}.bind(this),
+				// height
+				hit_line_pos : function() {
+					return this.screen_bounds.p2.y;
+				}.bind(this),
+				// nr of operations allowed
+				nr_of_operations : function() {
+					return OPERATORS.length;
+				}.bind(this)
 			};
 
 			this.statistics = {
@@ -19,10 +71,6 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 				time : 0
 			};
 
-			// the screen is x0,y0 295/18 and x1,y1 983/407
-			// - some space for the input field and bar
-			this.screen_bounds = Rect.create(295, 18, 983, 380);
-
 			this._delay_counter = 0;
 		}
 
@@ -31,12 +79,12 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 		Controller.prototype.onUpdate = function (delta) {
 
 			var enemy_speed_x = 0;
-			var enemy_speed_y = between(5, 20); // todo multiply with game phase speed
+			var enemy_speed_y = this.game_settings.enemy_speed();
 
 			if (this._delay_counter <= 0) {
 				var enemy_options = {
 					speed : new V2(enemy_speed_x, enemy_speed_y),
-					operator : OPERATORS[between(0, OPERATORS.length)]
+					operator : OPERATORS[between(0, this.game_settings.nr_of_operations())]
 				};
 
 				var op_values = this.getValues(enemy_options.operator);
@@ -46,7 +94,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 				var initial_position = this.getStartPosition();
 
 				this.add(new Enemy(initial_position, Zero(), undefined, enemy_options));
-				this._delay_counter = this.game_settings.spawn_delay;
+				this._delay_counter = this.game_settings.enemy_delay;
 			}
 
 			this._delay_counter -= delta;
@@ -63,7 +111,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 
 		// Check if an entity is still on a valid screen position, otherwise remove
 		Controller.prototype.checkEntityForBounds = function(entity, position) {
-			if (position.y > this.screen_bounds.p2.y) {
+			if (position.y > this.game_settings.hit_line_pos) {
 				this.onEnemyReachedBottom(entity);
 				this.remove(entity);
 			}
@@ -91,51 +139,8 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 		};
 
 		Controller.prototype.getValues = function(operator) {
-			switch (operator) {
-				case '+':
-					return this.getValuesForAddition();
-				case '-':
-					return this.getValuesForSubtraction();
-				case '*':
-					return this.getValuesForMultiplication();
-				case '/':
-					return this.getValuesForDivision();
-			}
+			return OP_GENERATORS[operator]();
 		};
-
-		Controller.prototype.getValuesForAddition = function() {
-			return {
-				op_1 : between(1, 10),
-				op_2 : between(1, 10)
-			};
-		};
-
-		Controller.prototype.getValuesForSubtraction = function() {
-			var op1 = between(1, 10),
-				op2 = between(1, 10);
-
-			return {
-				op_1 : op1 > op2 ? op1 : op2,
-				op_2 : op1 > op2 ? op2 : op1
-			};
-		};
-
-		Controller.prototype.getValuesForMultiplication = function() {
-			return this.getValuesForAddition();
-		};
-
-		// make division always be without fractions
-		Controller.prototype.getValuesForDivision = function() {
-			var op1 = between(1, 10),
-				op2 = between(1, 10);
-
-			return {
-				op_1 : op1 * op2,
-				op_2 : op2
-			};
-		};
-
-
 
 		return Controller;
 	}
