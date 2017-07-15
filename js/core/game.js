@@ -23,6 +23,10 @@ define(['config/config', 'config/screen', 'config/fonts'],
 
 			scale: 1,
 
+			sound_volume: 100,
+
+			text_speed: 0,
+
 			resize: function() {
 				var fw = window.innerWidth / screen.w;
 				var fh = window.innerHeight / screen.h;

@@ -2,10 +2,12 @@ define(['require', 'basic/button', 'core/graphic', 'core/game', 'geo/v2', 'trans
 	function(require, Button, graphics, game, V2, SlideInLeftTransition, SlideInRightTransition, Easing) {
 		graphics.add('img/back.png');
 
-		function BackButton(scene, right) {
+		function BackButton(scene, right, no_transition) {
+			if (no_transition)
+				return Button.create(new V2(0, 600), function() { game.scene = require('config/scenes')[scene]; }).img('img/back.png');
 			if (right)
-				return Button.create(new V2(0, 500), function() { game.scene = new SlideInRightTransition(require('config/scenes')[scene], 1000, Easing.OUTQUAD); }).img('img/back.png');
-			return Button.create(new V2(0, 500), function() { game.scene = new SlideInLeftTransition(require('config/scenes')[scene], 1000, Easing.OUTQUAD); }).img('img/back.png');
+				return Button.create(new V2(0, 600), function() { game.scene = new SlideInRightTransition(require('config/scenes')[scene], 1000, Easing.OUTQUAD); }).img('img/back.png');
+			return Button.create(new V2(0, 600), function() { game.scene = new SlideInLeftTransition(require('config/scenes')[scene], 1000, Easing.OUTQUAD); }).img('img/back.png');
 		}
 
 		return BackButton;
