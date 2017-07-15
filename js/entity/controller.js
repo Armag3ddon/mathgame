@@ -118,6 +118,8 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this.add(new RightMonitor(new V2(760, 478), {
 				size : new V2(200, 50)
 			}));
+
+			this.current_combo_modifier = '+';
 		}
 
 		Controller.prototype = new Entity();
@@ -217,6 +219,10 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 		// filters the entities
 		Controller.prototype.processInput = function(input) {
+			if (this.checkForCombo(input)) {
+				this.showComboWonAnimation();
+			}
+
 			this.entities = this.entities.filter(function(e) {
 				if (typeof e.isHitBy !== 'undefined' && e.isHitBy(input)) {
 					this.statistics.score += e.result;
@@ -236,6 +242,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				}
 				return true;
 			}.bind(this));
+
 			if (this.hit_buffer == 0)
 				s.play('snd/wrong_answer.mp3');
 		};
@@ -283,8 +290,48 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		};
 
 		Controller.prototype.getNewComboModifier = function() {
+			this.current_combo_modifier = '+';
 			return '+';
 		};
+
+		Controller.prototype.checkForCombo = function(input) {
+			var dead = [],
+				found = false;
+
+			// check if any of the enemies + combo modif + another enemy matches the input
+			for (var j=0; j<this.entities.length; j++) {
+				var e1 = this.entities[j];
+				if (typeof e1.result === 'undefined')
+					continue;
+
+				for (var i=0; i<this.entities.length; i++) {
+					var e2 = this.entities[i];
+					if (typeof e2.result === 'undefined')
+						continue;
+
+					var result = parseInt(eval(e1.result + this.current_combo_modifier + e2.result), 10);
+					if (result == input) {
+						dead.push(e1);
+						dead.push(e2);
+						found = true;
+					}
+				}
+			}
+
+			if (found) {
+				dead.forEach(function(e) {
+					e.dead = true;
+				}.bind(this));
+			}
+
+			return found;
+		};
+
+		Controller.prototype.showComboWonAnimation = function() {
+			console.log("Combo Combo !");
+		};
+
+
 
 		return Controller;
 	}
