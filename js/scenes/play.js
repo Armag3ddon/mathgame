@@ -9,6 +9,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 GFX_BG : 'img/background.jpg',
                 GFX_TT : 'img/tentacel_spritesheet.png',
                 GFX_PROG : 'img/programmer_spritesheet_glow.png',
+                GFX_PROG_STRESS : 'img/programmer_spritesheet_stressed.png',
                 GFX_EUREKA : 'img/eureka_engineer.png',
                 GFX_EUREKA_BUBBLE : 'img/eureka_bubble.png',
                 GFX_OHNO : 'img/ohno_engineer.png',
@@ -45,17 +46,17 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 },
                 excited : {
 					name : 'excited',
-                    anim : GFX.GFX_PROG,
-                    speed: 70,
-					images: 12,
+                    anim : GFX.GFX_PROG_STRESS,
+                    speed: 125,
+					images: 24,
                     pos :  new V2(461, 360),
                     blink_speed: 250
                 },
                 panic : {
 					name : 'panic',
-                    anim : GFX.GFX_PROG,
-                    speed: 30,
-					images: 12,
+                    anim : GFX.GFX_PROG_STRESS,
+                    speed: 70,
+					images: 24,
                     pos :  new V2(461, 360),
                     blink_speed: 100
                 },
@@ -124,6 +125,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
 				this.bg = GFX.GFX_BG;
 
                 this.programmer = null;
+                this.programmer_state_name = "normal";
 				this.bubble_time = 0;
                 this.setStateForProgrammer("normal");
 
@@ -171,6 +173,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
 					this.programmer_old = null;
 				}
                 this.programmer = programmer_states[state_name];
+                this.programmer_state_name = state_name;
 				if (this.programmer.blink_speed)
 					this.typefield.blink_speed = this.programmer.blink_speed;
 
@@ -208,6 +211,17 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
 
 				var shield_val = Math.min(Math.max((Math.floor(this.controller.total_health_percent / 10) * 10), 0), 100);
 				this.shield_display.img = g['img/shield/shield_' + shield_val + '.png'];
+
+                if (shield_val < 60 && shield_val > 20) {
+                    if (this.programmer_state_name !== "excited")
+                        this.setStateForProgrammer("excited");
+                } else if (shield_val <= 20) {
+                    if (this.programmer_state_name !== "panic")
+                        this.setStateForProgrammer("panic");
+                } else {
+                    if (this.programmer_state_name !== "normal")
+                        this.setStateForProgrammer("normal");
+                }
 			};
 
 			return PlayScene;
