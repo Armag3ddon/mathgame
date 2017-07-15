@@ -1,12 +1,12 @@
 define(function() {
-	function FontStyle(size, color, type, hover) {
+	function FontStyle(size, color, type, hover, align, base) {
 		this.size = size;
 		this.color = color || 'black';
 		this.type = type || 'sans-serif';
 		this.hover = hover;
 
-		this.align = 'center';
-		this.base = 'middle';
+		this.align = align || 'center';
+		this.base = base || 'middle';
 	}
 
 	FontStyle.prototype.apply = function(ctx, hover) {

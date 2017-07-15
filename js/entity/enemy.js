@@ -1,8 +1,8 @@
 define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
     function(Entity, V2, TextEntity, f)
     {
-        function Enemy(pos, size, color, options) {
-            Entity.call(this, pos, size, color);
+        function Enemy(pos, options) {
+            Entity.call(this, pos);
 
             var font = f.onscreen;
 
@@ -17,6 +17,10 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
 
         Enemy.prototype = new Entity();
 
+        Enemy.prototype.isBoss = function() {
+            return false;
+        };
+
         Enemy.prototype.onUpdate = function (delta) {
             var s = delta > 0 ? new V2(this.options.speed.x / delta, this.options.speed.y / delta) : 0;
             this.position.add(s);
@@ -26,7 +30,7 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
 
         Enemy.prototype.isHitBy = function(val) {
             return val === this.result;
-        }
+        };
 
         return Enemy;
     }

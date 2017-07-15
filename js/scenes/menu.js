@@ -11,6 +11,12 @@ define(['lib/scene', 'basic/button', 'core/game', 'geo/v2', 'transitions/slidein
 				}
 			).rect(280, 60).text("Play");
 
+			var optionsButton = Button.create(new V2(0, 680),
+				function() {
+					game.scene = require('config/scenes').options;
+				}
+			).rect(280, 60).text("Options");
+
 			var creditsButton = Button.create(new V2(0, 680),
 				function() {
 					game.scene = new SlideInLeftTransition(require('config/scenes').credits, 1000, Easing.OUTQUAD);
@@ -23,8 +29,9 @@ define(['lib/scene', 'basic/button', 'core/game', 'geo/v2', 'transitions/slidein
 				}
 			).rect(280, 60).text("Help");
 
-			var vLayout = new Layout.vertical(new V2(0, 400), 20, 20);
+			var vLayout = new Layout.vertical(new V2(0, 350), 20, 20);
 			vLayout.add(playButton);
+			vLayout.add(optionsButton);
 			vLayout.add(creditsButton);
 			vLayout.add(helpButton);
 			vLayout.align("center");

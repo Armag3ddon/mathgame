@@ -1,5 +1,5 @@
-define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random'],
-	function(Entity, V2, Rect, Enemy, R)
+define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'definition/random', 'core/game'],
+	function(Entity, V2, Rect, Enemy, Boss, R, game)
 	{
 		var between = R.betweenInt;
 		var OPERATORS = ['+', '-', '*', '/'];
@@ -37,6 +37,17 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 			}
 		};
 
+		var getRandomOp = function(max_ops) {
+			var operator =  OPERATORS[between(0, max_ops)],
+				op_values = OP_GENERATORS[operator]();
+
+			return {
+				operator : operator,
+				op_1 : op_values.op_1,
+				op_2 : op_values.op_2
+			};
+		};
+
 		function Controller(pos) {
 			Entity.call(this);
 			this.position = pos;
@@ -50,62 +61,107 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 				enemy_delay : 2000,
 				// spawn a boss every ms
 				boss_delay: 20000,
-				// speed
+				// nr od operations for a boss
+				boss_ops : 2,
+				// speed (x and y direction)
 				enemy_speed : function() {
-					return between(5, 20);
+					return new V2(0, between(20, 40) * this.game_settings.diff_base());
 				}.bind(this),
+				// boss speed is different (x and y direction)
+				boss_speed : function() {
+					return new V2(0, between(10, 20) * this.game_settings.diff_base());
+				}.bind(this),
+
 				// height
 				hit_line_pos : function() {
 					return this.screen_bounds.p2.y;
 				}.bind(this),
+
 				// nr of operations allowed
 				nr_of_operations : function() {
 					return OPERATORS.length;
-				}.bind(this)
+				}.bind(this),
+
+				// difficulty base value from settings
+				diff_base : function() {
+					return Math.max(0.1, game.text_speed / 2);
+				}
 			};
 
 			this.statistics = {
 				score : 0,
-				solved : 0,
-				lost : 0,
-				time : 0
+				enemy_solved : 0,
+				enemy_lost : 0,
+				time : 0,
+				boss_solved: 0,
+				boss_lost : 0
 			};
 
-			this._delay_counter = 0;
+			this._enemy_delay = 0;
+			this._boss_delay = this.game_settings.boss_delay;
+			this._boss_active = false;
 		}
 
 		Controller.prototype = new Entity();
 
 		Controller.prototype.onUpdate = function (delta) {
-
-			var enemy_speed_x = 0;
-			var enemy_speed_y = this.game_settings.enemy_speed();
-
-			if (this._delay_counter <= 0) {
-				var enemy_options = {
-					speed : new V2(enemy_speed_x, enemy_speed_y),
-					operator : OPERATORS[between(0, this.game_settings.nr_of_operations())]
-				};
-
-				var op_values = this.getValues(enemy_options.operator);
-				enemy_options.op_1 = op_values.op_1;
-				enemy_options.op_2 = op_values.op_2;
-
-				var initial_position = this.getStartPosition();
-
-				this.add(new Enemy(initial_position, Zero(), undefined, enemy_options));
-				this._delay_counter = this.game_settings.enemy_delay;
+			if (this._enemy_delay <= 0 && !this._boss_active) {
+				this.spawnEnemy();
+				this._enemy_delay = this.game_settings.enemy_delay;
 			}
 
-			this._delay_counter -= delta;
+			if (this._boss_delay <= 0 && !this._boss_active) {
+				this.spawnBoss();
+				this._boss_delay = this.game_settings.boss_delay;
+				this._boss_active = true;
+			}
+
+			// having an active boss doesn't trigger new objects
+			if (!this._boss_active) {
+				this._boss_delay -= delta;
+				this._enemy_delay -= delta;
+			}
+
 			this.statistics.time += delta;
+		};
+
+		Controller.prototype.spawnEnemy = function() {
+			var op = getRandomOp(this.game_settings.nr_of_operations());
+
+			this.add(new Enemy(this.getStartPosition(), {
+				speed : this.game_settings.enemy_speed(),
+				operator : op.operator,
+				op_1 : op.op_1,
+				op_2 : op.op_2
+			}));
+		};
+
+		Controller.prototype.spawnBoss = function() {
+			var ops = [];
+			for (var i=0; i < this.game_settings.boss_ops; i++) {
+				ops.push(getRandomOp(this.game_settings.nr_of_operations()));
+			}
+
+			this.add(new Boss(this.getStartPosition(), {
+				speed : this.game_settings.boss_speed(),
+				operations : ops
+			}));
 		};
 
 		// Called when an enemy reaches the bottom line, player should be
 		Controller.prototype.onEnemyReachedBottom = function(entity) {
-			console.log("You got hit by: a smooth criminal");
-			this.statistics.lost += 1;
+			if (entity.isBoss()) {
+				console.log("You got hit by: a boss!");
+				this._boss_active = false;
+				this._boss_delay = this.game_settings.boss_delay;
+				this.statistics.boss_lost += 1;
+			} else {
+				console.log("You got hit by: a dude");
+				this.statistics.enemy_lost += 1;
+			}
+
 			this.parent.triggerRandomEvent();
+
 			console.log(this.statistics);
 		};
 
@@ -122,7 +178,16 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 			this.entities = this.entities.filter(function(e) {
 				if (e.isHitBy(input)) {
 					this.statistics.score += e.result;
-					this.statistics.solved += 1;
+
+					if (e.isBoss()) {
+						this.statistics.boss_solved += 1;
+						console.log('Boss kill!');
+						this._boss_active = false;
+						this._boss_delay = this.game_settings.boss_delay;
+					} else {
+						this.statistics.enemy_solved += 1;
+					}
+
 					console.log('Got One with:', input);
 					console.log(this.statistics);
 					return false;
@@ -136,10 +201,6 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 			var x_offset_to_composate_width = 50;
 			return new V2(between(this.screen_bounds.p1.x, this.screen_bounds.p2.x - x_offset_to_composate_width),
 				this.screen_bounds.p1.y);
-		};
-
-		Controller.prototype.getValues = function(operator) {
-			return OP_GENERATORS[operator]();
 		};
 
 		return Controller;
