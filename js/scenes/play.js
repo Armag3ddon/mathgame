@@ -206,7 +206,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
 					}
 				}
 
-				this.shield_display.img = g['img/shield/shield_' + (Math.floor(this.controller.total_health_percent / 10) * 10) + '.png'];
+				var shield_val = Math.min(Math.max((Math.floor(this.controller.total_health_percent / 10) * 10), 0), 100);
+				this.shield_display.img = g['img/shield/shield_' + shield_val + '.png'];
 			};
 
 			return PlayScene;
