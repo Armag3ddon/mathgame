@@ -28,6 +28,8 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
             this.result = eval(this.text);
 			this.dead = false;
 			this.dieing_time = 2000;
+			this.combo_death = false;
+			this.combo_death_buffer = 0;
 
             this.add(this.display);
         }
@@ -45,11 +47,28 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
             this.parent.checkEntityForBounds(this, this.position);
 
 			if (this.dead) {
-				this.dieing_time -= delta;
-				var new_color = this.lerpColor(f.onscreen.color, '#aa0000', 1 - this.dieing_time/2000);
-				this.display.override_color = new_color;
-				if (this.dieing_time <= 0) {
-					this.parent.removeFromDieing(this);
+				if (this.combo_death) {
+					this.dieing_time -= delta;
+					this.combo_death_buffer += delta;
+					if (this.combo_death_buffer < 100) {
+						this.display.override_color = '#000000';
+						this.display.effectFrame = true;
+					} else {
+						this.display.override_color = '#33cc33';
+						if (this.combo_death_buffer >= 200)
+							this.combo_death_buffer = 0;
+							this.display.effectFrame = false;
+					}
+					if (this.dieing_time <= 0) {
+						this.parent.removeFromDieing(this);
+					}
+				} else {
+					this.dieing_time -= delta;
+					var new_color = this.lerpColor(f.onscreen.color, '#aa0000', 1 - this.dieing_time/2000);
+					this.display.override_color = new_color;
+					if (this.dieing_time <= 0) {
+						this.parent.removeFromDieing(this);
+					}
 				}
 			}
         };
@@ -78,6 +97,15 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
 			}
             return false;
         };
+
+		Boss.prototype.death = function() {
+			this.parent.remove(this);
+			this.parent.addToDieing(this);
+			this.dead = true;
+			this.combo_death = true;
+			this.display.text = this.result;
+			this.options.speed = Zero();
+		};
 
         return Boss;
     }
