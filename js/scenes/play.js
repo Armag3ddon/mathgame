@@ -6,7 +6,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
                 GFX_BG : 'img/background.png',
                 GFX_TT : 'img/tentacel_spritesheet.png',
                 GFX_PROG : 'img/programmer_spritesheet_glow.png',
-                GFX_POPUPS : 'img/popup_spritesheet.png'
+                GFX_POPUPS : 'img/popup_spritesheet.png',
+                GFX_TRIBBLE : 'img/tribble_spritesheet.png'
             };
 
             Object.keys(GFX).forEach(function(k) {
@@ -46,6 +47,12 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
                     speed: 500,
                     images: 12,
                     pos :  new V2(47, 125)
+                },
+                tribble : {
+                    anim : GFX.GFX_TRIBBLE,
+                    speed: 100,
+                    images: 9,
+                    pos :  new V2(1041, 96)
                 }
             };
 
