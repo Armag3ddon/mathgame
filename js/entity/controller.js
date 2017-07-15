@@ -1,9 +1,8 @@
-define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'definition/random', 'core/game'],
-	function(Entity, V2, Rect, Enemy, Boss, R, game)
+define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'definition/random', 'core/game', 'config/fonts'],
+	function(Entity, V2, Rect, Enemy, Boss, R, game, f)
 	{
 		var between = R.betweenInt;
-		var ALL_OPERATORS = ['+', '-', '*', '/'],
-			OPERATORS = ALL_OPERATORS;
+		var OPERATORS = ['+', '-', '*', '/'];
 
 		var OP_GENERATORS = {
 			'+' : function() {
@@ -101,15 +100,13 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this._enemy_delay = 0;
 			this._boss_delay = this.game_settings.boss_delay;
 			this._boss_active = false;
+
+			this.dieing = [];
 		}
 
 		Controller.prototype = new Entity();
 
 		Controller.prototype.onUpdate = function (delta) {
-			OPERATORS = ALL_OPERATORS.filter(function(o, i) {
-				return game.operations[i];
-			});
-
 			if (this._enemy_delay <= 0 && !this._boss_active) {
 				this.spawnEnemy();
 				this._enemy_delay = this.game_settings.enemy_delay;
@@ -128,6 +125,12 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			}
 
 			this.statistics.time += delta;
+
+			this.dispatch(this.dieing, 'update', delta);
+		};
+
+		Controller.prototype.onDraw = function(ctx) {
+			this.dispatch(this.dieing, 'draw', ctx);
 		};
 
 		Controller.prototype.spawnEnemy = function() {
@@ -147,10 +150,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				ops.push(getRandomOp(this.game_settings.nr_of_operations()));
 			}
 
-			// center bosses
-			var start_pos = new V2(this.screen_bounds.p1.x + 250, this.screen_bounds.p1.y);
-
-			this.add(new Boss(start_pos, {
+			this.add(new Boss(this.getStartPosition(), {
 				speed : this.game_settings.boss_speed(),
 				operations : ops
 			}));
@@ -208,7 +208,17 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		Controller.prototype.getStartPosition = function() {
 			var x_offset_to_composate_width = 50;
 			return new V2(between(this.screen_bounds.p1.x, this.screen_bounds.p2.x - x_offset_to_composate_width),
-				this.screen_bounds.p1.y);
+				this.screen_bounds.p1.y + f.onscreen.size/2);
+		};
+
+		Controller.prototype.addToDieing = function (enemy) {
+			this.dieing.push (enemy);
+		};
+
+		Controller.prototype.removeFromDieing = function (enemy) {
+			var index = this.dieing.indexOf(enemy);
+			if (index > -1)
+				this.dieing.splice(index, 1);
 		};
 
 		return Controller;

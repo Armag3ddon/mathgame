@@ -10,6 +10,8 @@ define(['basic/entity', 'config/fonts'],
 
 			TextEntity.prototype.onDraw = function(ctx) {
 				this.font.apply(ctx, this.hover());
+				if (this.override_color)
+					ctx.fillStyle = this.override_color;
 				ctx.fillText(this.text, 0, 0);
 			};
 
