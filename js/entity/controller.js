@@ -326,6 +326,8 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		};
 
 		Controller.prototype.addToDieing = function (enemy) {
+			if (enemy.isBoss())
+				this._boss_active = false;
 			this.dieing.push (enemy);
 			this.hit_buffer++;
 		};
