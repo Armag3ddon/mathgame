@@ -139,7 +139,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 			this.current_combo_modifier = '+';
 
-			this.total_health_percent = 100;
+			this.total_health_percent = 1;
 			this._shield_down_delay = this.game_settings.shield_down_delay;
 
 		}
@@ -185,7 +185,17 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this._shield_down_delay -= delta;
 
 			this.dispatch(this.dieing, 'update', delta);
-			this.hit_buffer = 0;
+			if (this.hit_buffer > 0) {
+				if (this.hit_buffer == 1)
+					s.play('snd/correct_answer.mp3');
+					if (Math.random()*100 < 4)
+						this.parent.success();
+				if (this.hit_buffer > 1) {
+					s.play('snd/correct_answer.mp3');
+					this.parent.success();
+				}
+				this.hit_buffer = 0;
+			}
 		};
 
 		Controller.prototype.onDraw = function(ctx) {
@@ -233,10 +243,13 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				this._boss_delay = this.game_settings.boss_delay;
 				this.total_health_percent -= this.game_settings.boss_shield_down_damage;
 				this.statistics.boss_lost += 1;
+				this.parent.fail();
 			} else {
 				console.log("You got hit by: a girl or boy or other dude");
 				this.statistics.enemy_lost += 1;
 				this.total_health_percent -= this.game_settings.enemy_shield_down_damage;
+				if (Math.random()*100 < 4)
+					this.parent.fail();
 				s.play('snd/fail.mp3');
 			}
 
@@ -294,8 +307,6 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 		Controller.prototype.addToDieing = function (enemy) {
 			this.dieing.push (enemy);
-			if (this.hit_buffer == 0)
-				s.play('snd/correct_answer.mp3');
 			this.hit_buffer++;
 		};
 
@@ -374,8 +385,8 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		};
 
 		Controller.prototype.gameOver = function() {
-			console.log("Game Lost");
-			throw "Game Over not implemnted!"
+			game.scene = require('config/scenes').gameover;
+			game.scene.gameOver();
 		};
 
 
