@@ -113,7 +113,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this._diff_change = this.game_settings.diff_change_time;
 			this._current_diff = 0;
 
-			this.left_monitor = new LeftMonitor(new V2(500, 500), {
+			this.left_monitor = new LeftMonitor(new V2(515, 478), {
 
 			});
 			this.add(this.left_monitor);

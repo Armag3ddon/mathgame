@@ -3,7 +3,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
             var between = R.betweenInt;
 
             var GFX = {
-                GFX_BG : 'img/background.png',
+                GFX_BG : 'img/background.jpg',
                 GFX_TT : 'img/tentacel_spritesheet.png',
                 GFX_PROG : 'img/programmer_spritesheet_glow.png',
                 GFX_POPUPS : 'img/popup_spritesheet.png',
