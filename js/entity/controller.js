@@ -142,7 +142,9 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				ops.push(getRandomOp(this.game_settings.nr_of_operations()));
 			}
 
-			this.add(new Boss(this.getStartPosition(), {
+			var start_pos = new V2(this.screen_bounds.p1.x + 250, this.screen_bounds.p1.y);
+
+			this.add(new Boss(start_pos, {
 				speed : this.game_settings.boss_speed(),
 				operations : ops
 			}));

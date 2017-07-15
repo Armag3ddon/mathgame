@@ -1,5 +1,5 @@
-define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/typefield', 'lib/animation', 'definition/random'],
-		function(Scene, V2, g, Controller, TypeField, Animation, R) {
+define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/typefield', 'lib/animation', 'definition/random', 'basic/image'],
+		function(Scene, V2, g, Controller, TypeField, Animation, R, Image) {
             var between = R.betweenInt;
 
             var GFX = {
@@ -7,7 +7,9 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
                 GFX_TT : 'img/tentacel_spritesheet.png',
                 GFX_PROG : 'img/programmer_spritesheet_glow.png',
                 GFX_POPUPS : 'img/popup_spritesheet.png',
-                GFX_TRIBBLE : 'img/tribble_spritesheet.png'
+                GFX_TRIBBLE : 'img/tribble_spritesheet.png',
+                GFX_WINDOW_ANIM : 'img/animation_window.png',
+                GFX_WINDOW : 'img/window_overlay.png'
             };
 
             Object.keys(GFX).forEach(function(k) {
@@ -77,6 +79,9 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
 
                 this.programmer = null;
                 this.setStateForProgrammer("normal");
+
+                this.add(new Animation('window_anim', GFX.GFX_WINDOW_ANIM, new V2(1040, 70), 19, 100, true));
+                this.add(new Image(new V2(1040, 70), GFX.GFX_WINDOW));
 
                 this.event = null;
 			}
