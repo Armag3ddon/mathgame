@@ -1,5 +1,5 @@
-define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'definition/random'],
-	function(Entity, V2, Rect, Enemy, Boss, R)
+define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'definition/random', 'core/game'],
+	function(Entity, V2, Rect, Enemy, Boss, R, game)
 	{
 		var between = R.betweenInt;
 		var OPERATORS = ['+', '-', '*', '/'];
@@ -65,20 +65,27 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				boss_ops : 2,
 				// speed (x and y direction)
 				enemy_speed : function() {
-					return new V2(0, between(5, 20));
+					return new V2(0, between(20, 40) * this.game_settings.diff_base());
 				}.bind(this),
 				// boss speed is different (x and y direction)
 				boss_speed : function() {
-					return new V2(0, between(1, 10));
-				},
+					return new V2(0, between(10, 20) * this.game_settings.diff_base());
+				}.bind(this),
+
 				// height
 				hit_line_pos : function() {
 					return this.screen_bounds.p2.y;
 				}.bind(this),
+
 				// nr of operations allowed
 				nr_of_operations : function() {
 					return OPERATORS.length;
-				}.bind(this)
+				}.bind(this),
+
+				// difficulty base value from settings
+				diff_base : function() {
+					return Math.max(0.1, game.text_speed / 2);
+				}
 			};
 
 			this.statistics = {
@@ -143,7 +150,6 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 		// Called when an enemy reaches the bottom line, player should be
 		Controller.prototype.onEnemyReachedBottom = function(entity) {
-
 			if (entity.isBoss()) {
 				console.log("You got hit by: a boss!");
 				this._boss_active = false;
@@ -153,7 +159,6 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				console.log("You got hit by: a dude");
 				this.statistics.enemy_lost += 1;
 			}
-
 
 			this.parent.triggerRandomEvent();
 
