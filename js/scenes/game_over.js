@@ -3,6 +3,7 @@ define(['basic/button', 'lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'li
 		s.add('snd/gameover.mp3');
 		g.add('img/menu_bg.png');
 		g.add('img/button_back.png');
+		g.add('img/button_back_hover.png');
 
         function GameOverScene() {
             Scene.call(this);
@@ -17,7 +18,7 @@ define(['basic/button', 'lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'li
 
 					require('core/game').scene = Scenes.menu;
 				}
-			).img('img/button_back.png'));
+			).img('img/button_back.png').hoverImg('img/button_back_hover.png'));
 
         }
 

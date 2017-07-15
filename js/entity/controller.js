@@ -10,6 +10,8 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		var ALL_OPERATORS = ['+', '-', '*', '/'];
 		var OPERATORS = ALL_OPERATORS;
 
+		var VALID_COMBO_MODIFIERS = ['+', '-', '*'];
+
 		var OP_GENERATORS = {
 			'+' : function() {
 				return {
@@ -136,7 +138,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this._current_diff = 0;
 
 			this.add(new LeftMonitor(new V2(515, 478), {}));
-			this.add(new RightMonitor(new V2(760, 478), {
+			this.add(new RightMonitor(new V2(660, 478), {
 				size : new V2(200, 50)
 			}));
 
@@ -357,8 +359,10 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		};
 
 		Controller.prototype.getNewComboModifier = function() {
-			this.current_combo_modifier = '+';
-			return '+';
+			var r = between(0, VALID_COMBO_MODIFIERS.length);
+
+			this.current_combo_modifier = VALID_COMBO_MODIFIERS[r];
+			return this.current_combo_modifier;
 		};
 
 		Controller.prototype.checkForCombo = function(input) {

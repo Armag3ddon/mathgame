@@ -1,5 +1,5 @@
-define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
-    function(Entity, V2, TextEntity, f)
+define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts', 'definition/random'],
+    function(Entity, V2, TextEntity, f, R)
     {
         function RightMonitor(pos, options) {
             Entity.call(this, pos, options.size);
@@ -23,13 +23,14 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
             if (this._time_number < 0) {
                 this.addNewModifier();
                 this._time_number = this.time_to_new_modifier;
+                this.time_to_new_modifier = 3000 + R.betweenInt(1000, 4000);
             }
 
             this._time_number -= delta;
         };
 
         RightMonitor.prototype.addNewModifier = function() {
-            this.display.text = this.parent.getNewComboModifier();
+            this.display.text = 'Modifier: ' + this.parent.getNewComboModifier();
             this.center(this.display);
         };
 

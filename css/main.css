@@ -1,13 +1,14 @@
 body {
 	margin: 0;
 	padding: 0;
+	background: #000;
 }
 
 #gameframe {
 	position: absolute;
 	top: 0;
 	left: 0;
-	background: #CCC;
+	background: #000;
 }
 
 #loading {
@@ -16,9 +17,9 @@ body {
 	left: 50%;
 	z-index: 10;
 	text-align: center;
-	width: 200px;
-	margin-left: -100px;
-	margin-top: -100px;
+	width: 300px;
+	margin-left: -150px;
+	margin-top: -150px;
 	background: white;
 	border: 1px solid #333;
 	border-radius: 5px;

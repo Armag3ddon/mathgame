@@ -9,6 +9,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 GFX_BG : 'img/background.jpg',
                 GFX_TT : 'img/tentacel_spritesheet.png',
                 GFX_PROG : 'img/programmer_spritesheet_glow.png',
+                GFX_PROG_STRESS : 'img/programmer_spritesheet_stressed.png',
                 GFX_EUREKA : 'img/eureka_engineer.png',
                 GFX_EUREKA_BUBBLE : 'img/eureka_bubble.png',
                 GFX_OHNO : 'img/ohno_engineer.png',
@@ -16,7 +17,18 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 GFX_POPUPS : 'img/popup_spritesheet.png',
                 GFX_TRIBBLE : 'img/tribble_spritesheet.png',
                 GFX_WINDOW_ANIM : 'img/animation_window.png',
-                GFX_WINDOW : 'img/window_overlay.png'
+                GFX_WINDOW : 'img/window_overlay.png',
+                GFX_SHIELD_0 : 'img/shield/shield_0.png',
+                GFX_SHIELD_10 : 'img/shield/shield_10.png',
+                GFX_SHIELD_20 : 'img/shield/shield_20.png',
+                GFX_SHIELD_30 : 'img/shield/shield_30.png',
+                GFX_SHIELD_40 : 'img/shield/shield_40.png',
+                GFX_SHIELD_50 : 'img/shield/shield_50.png',
+                GFX_SHIELD_60 : 'img/shield/shield_60.png',
+                GFX_SHIELD_70 : 'img/shield/shield_70.png',
+                GFX_SHIELD_80 : 'img/shield/shield_80.png',
+                GFX_SHIELD_90 : 'img/shield/shield_90.png',
+                GFX_SHIELD_100 : 'img/shield/shield_100.png'
             };
 
             Object.keys(GFX).forEach(function(k) {
@@ -34,17 +46,17 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 },
                 excited : {
 					name : 'excited',
-                    anim : GFX.GFX_PROG,
-                    speed: 70,
-					images: 12,
+                    anim : GFX.GFX_PROG_STRESS,
+                    speed: 125,
+					images: 24,
                     pos :  new V2(461, 360),
                     blink_speed: 250
                 },
                 panic : {
 					name : 'panic',
-                    anim : GFX.GFX_PROG,
-                    speed: 30,
-					images: 12,
+                    anim : GFX.GFX_PROG_STRESS,
+                    speed: 70,
+					images: 24,
                     pos :  new V2(461, 360),
                     blink_speed: 100
                 },
@@ -53,7 +65,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
 					anim : GFX.GFX_EUREKA,
 					speed : 1000,
 					images : 1,
-					pos : new V2(486, 309),
+					pos : new V2(469, 336),
 					bubble : GFX.GFX_EUREKA_BUBBLE,
 					bubble_pos : new V2(491, 159),
 					temp : true,
@@ -64,7 +76,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
 					anim : GFX.GFX_OHNO,
 					speed : 1000,
 					images : 1,
-					pos : new V2(486, 309),
+					pos : new V2(469, 336),
 					bubble : GFX.GFX_OHNO_BUBBLE,
 					bubble_pos : new V2(491, 159),
 					temp : true,
@@ -113,11 +125,15 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
 				this.bg = GFX.GFX_BG;
 
                 this.programmer = null;
+                this.programmer_state_name = "normal";
 				this.bubble_time = 0;
                 this.setStateForProgrammer("normal");
 
+                this.shield_display = new Image(new V2(827, 517), GFX.GFX_SHIELD_100);
+
                 this.add(new Animation('window_anim', GFX.GFX_WINDOW_ANIM, new V2(1040, 70), 19, 100, true));
                 this.add(new Image(new V2(1040, 70), GFX.GFX_WINDOW));
+                this.add(this.shield_display);
 
                 this.event = null;
 			}
@@ -157,6 +173,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
 					this.programmer_old = null;
 				}
                 this.programmer = programmer_states[state_name];
+                this.programmer_state_name = state_name;
 				if (this.programmer.blink_speed)
 					this.typefield.blink_speed = this.programmer.blink_speed;
 
@@ -177,11 +194,11 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
 
 			PlayScene.prototype.success = function () {
 				this.setStateForProgrammer('eureka');
-			}
+			};
 
 			PlayScene.prototype.fail = function () {
 				this.setStateForProgrammer('ohno');
-			}
+			};
 
 			PlayScene.prototype.onUpdate = function (delta) {
 				if (this.bubble_time > 0) {
@@ -191,7 +208,21 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
 						this.bubble_time = 0;
 					}
 				}
-			}
+
+				var shield_val = Math.min(Math.max((Math.floor(this.controller.total_health_percent / 10) * 10), 0), 100);
+				this.shield_display.img = g['img/shield/shield_' + shield_val + '.png'];
+
+                if (shield_val < 60 && shield_val > 20) {
+                    if (this.programmer_state_name !== "excited")
+                        this.setStateForProgrammer("excited");
+                } else if (shield_val <= 20) {
+                    if (this.programmer_state_name !== "panic")
+                        this.setStateForProgrammer("panic");
+                } else {
+                    if (this.programmer_state_name !== "normal")
+                        this.setStateForProgrammer("normal");
+                }
+			};
 
 			return PlayScene;
 		}
