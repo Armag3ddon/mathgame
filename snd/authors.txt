@@ -19,3 +19,6 @@ fail.mp3
 combo.mp3
 	by Thrilllight, http://freesound.org/people/Thrilllight/sounds/317071/
 	CC-BY 3.0
+gameover.mp3
+	by myfox14, http://freesound.org/people/myfox14/sounds/382310/
+	CC0
