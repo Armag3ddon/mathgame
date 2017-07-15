@@ -1,7 +1,7 @@
 define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random'],
 	function(Entity, V2, Rect, Enemy, Random)
 	{
-		var OPERATORS = ['+', '-'];
+		var OPERATORS = ['+', '-', '*', '/'];
 
 
 
@@ -100,6 +100,10 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 					return this.getValuesForAddition();
 				case '-':
 					return this.getValuesForSubtraction();
+				case '*':
+					return this.getValuesForMultiplication();
+				case '/':
+					return this.getValuesForDivision();
 			}
 		};
 
@@ -119,6 +123,23 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'definition/random
 				op_2 : op1 > op2 ? op2 : op1
 			};
 		};
+
+		Controller.prototype.getValuesForMultiplication = function() {
+			return this.getValuesForAddition();
+		};
+
+		// make division always be without fractions
+		Controller.prototype.getValuesForDivision = function() {
+			var op1 = betweenInt(1, 10),
+				op2 = betweenInt(1, 10);
+
+			return {
+				op_1 : op1 * op2,
+				op_2 : op2
+			};
+		};
+
+
 
 		return Controller;
 	}
