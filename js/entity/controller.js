@@ -65,11 +65,11 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				boss_ops : 2,
 				// speed (x and y direction)
 				enemy_speed : function() {
-					return new V2(0, between(20, 40) * this.game_settings.diff_base());
+					return new V2(0, between(20, 40) * this.getDifficultyFactor());
 				}.bind(this),
 				// boss speed is different (x and y direction)
 				boss_speed : function() {
-					return new V2(0, between(10, 20) * this.game_settings.diff_base());
+					return new V2(0, between(10, 20) * this.getDifficultyFactor());
 				}.bind(this),
 
 				// height
@@ -85,7 +85,10 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				// difficulty base value from settings
 				diff_base : function() {
 					return Math.max(0.1, game.text_speed / 2);
-				}
+				},
+
+				// all x seconds we make it harder
+				diff_change_time : 10000
 			};
 
 			this.statistics = {
@@ -102,6 +105,9 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this._boss_active = false;
 
 			this.dieing = [];
+
+			this._diff_change = this.game_settings.diff_change_time;
+			this._current_diff = 0;
 		}
 
 		Controller.prototype = new Entity();
@@ -118,6 +124,11 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				this._boss_active = true;
 			}
 
+			if (this._diff_change < 0) {
+				this.increaseDifficulty();
+				this._diff_change = this.game_settings.diff_change_time;
+			}
+
 			// having an active boss doesn't trigger new objects
 			if (!this._boss_active) {
 				this._boss_delay -= delta;
@@ -125,6 +136,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			}
 
 			this.statistics.time += delta;
+			this._diff_change -= delta;
 
 			this.dispatch(this.dieing, 'update', delta);
 		};
@@ -132,6 +144,16 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		Controller.prototype.onDraw = function(ctx) {
 			this.dispatch(this.dieing, 'draw', ctx);
 		};
+
+		Controller.prototype.getDifficultyFactor = function() {
+			return this.game_settings.diff_base() + this._current_diff;
+		};
+
+		Controller.prototype.increaseDifficulty = function() {
+			console.log("Difficulty increased, total", this.getDifficultyFactor() + 0.1);
+			return this._current_diff += 0.1;
+		};
+
 
 		Controller.prototype.spawnEnemy = function() {
 			var op = getRandomOp(this.game_settings.nr_of_operations());

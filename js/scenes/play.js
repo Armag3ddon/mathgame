@@ -53,8 +53,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'entity/controller', 'entity/type
                 tribble : {
                     anim : GFX.GFX_TRIBBLE,
                     speed: 100,
-                    images: 9,
-                    pos :  new V2(1041, 96)
+                    images: 12,
+                    pos :  new V2(1040, 70)
                 }
             };
 
