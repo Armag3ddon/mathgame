@@ -1,25 +1,23 @@
 define(['basic/entity', 'geo/v2', 'basic/text', 'basic/image', 'core/mouse', 'core/graphic', 'config/fonts', 'core/game'],
 function(Entity, V2, TextEntity, ImageEntity, mouse, g, f, game) {
-	g.add('img/meter.png');
-	g.add('img/meter_indicator.png');
+
+	g.add('img/slider_switch.png');
 
 	function Meter(pos, callback, fixedPositions, fixedTexts, startVal) {
-		this.width = 500;
-		this.indicator_width = 94;
+		this.width = 400;
+		this.indicator_width = 33;
 		this.mouse_threshold = 20;
 
 		pos.x -= this.indicator_width/2;
 		Entity.call(this, pos, new V2(this.width + this.indicator_width, 100));
 
-		this.bg = new ImageEntity(new V2(this.indicator_width/2, 0), 'img/meter.png');
-		this.indicator = new ImageEntity(Zero(), 'img/meter_indicator.png');
-		this.display = new TextEntity(new V2(this.width + this.indicator_width, this.size.y/2), '', f.onscreen);
+		this.indicator = new ImageEntity(Zero(), 'img/slider_switch.png');
+		this.display = new TextEntity(new V2(this.width + this.indicator_width + 20, this.size.y/2 - 32), '', f.onscreen);
 
 		this.value = 100;
 
 		this.dragged = false;
 
-		this.add(this.bg);
 		this.add(this.indicator);
 		this.add(this.display);
 
