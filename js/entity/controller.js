@@ -3,6 +3,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 	{
 		s.add('snd/correct_answer.mp3');
 		s.add('snd/wrong_answer.mp3');
+		s.add('snd/fail.mp3');
 
 		var between = R.betweenInt;
 		var OPERATORS = ['+', '-', '*', '/'];
@@ -198,6 +199,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			} else {
 				console.log("You got hit by: a dude");
 				this.statistics.enemy_lost += 1;
+				s.play('snd/fail.mp3');
 			}
 
 			this.parent.triggerRandomEvent();

@@ -13,3 +13,9 @@ typing.mp3, correct_answer.mp3
 wrong_answer.mp3
 	by Autistic Lucario, http://freesound.org/people/Autistic%20Lucario/sounds/142608/
 	CC-BY 3.0
+fail.mp3
+	by cabled_mess, http://freesound.org/people/cabled_mess/sounds/350985/
+	CC0
+combo.mp3
+	by Thrilllight, http://freesound.org/people/Thrilllight/sounds/317071/
+	CC-BY 3.0
