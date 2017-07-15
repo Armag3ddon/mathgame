@@ -1,5 +1,5 @@
-define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'definition/random', 'core/game', 'config/fonts', 'core/sound'],
-	function(Entity, V2, Rect, Enemy, Boss, R, game, f, s)
+define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'definition/random', 'core/game', 'config/fonts', 'core/sound', 'entity/left_monitor'],
+	function(Entity, V2, Rect, Enemy, Boss, R, game, f, s, LeftMonitor)
 	{
 		s.add('snd/correct_answer.mp3');
 		s.add('snd/wrong_answer.mp3');
@@ -112,6 +112,11 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 			this._diff_change = this.game_settings.diff_change_time;
 			this._current_diff = 0;
+
+			this.left_monitor = new LeftMonitor(new V2(500, 500), {
+
+			});
+			this.add(this.left_monitor);
 		}
 
 		Controller.prototype = new Entity();
@@ -211,7 +216,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		// filters the entities
 		Controller.prototype.processInput = function(input) {
 			this.entities = this.entities.filter(function(e) {
-				if (e.isHitBy(input)) {
+				if (typeof e.isHitBy !== 'undefined' && e.isHitBy(input)) {
 					this.statistics.score += e.result;
 
 					if (e.isBoss()) {
@@ -251,6 +256,29 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			var index = this.dieing.indexOf(enemy);
 			if (index > -1)
 				this.dieing.splice(index, 1);
+		};
+
+		// returns a random number or a real result from on screen enemies
+		Controller.prototype.getNumberForMonitor = function() {
+			var w20 = between(1, 20);
+
+			if (w20 < 15) {
+				return {
+					real: false,
+					val : between(1, 75)
+				};
+			}
+
+			var enemies_on_screen = this.entities.filter(function(e) {
+				return typeof e.isBoss === 'function';
+			});
+
+			var r = between(0, enemies_on_screen.length);
+
+			return {
+				real : true,
+				val : enemies_on_screen[r].result
+			};
 		};
 
 		return Controller;
