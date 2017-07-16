@@ -121,7 +121,10 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				boss_shield_down_damage : 7,
 
 				// but they also heal the shield much
-				boss_shield_health : 20
+				boss_shield_health : 20,
+
+				// combos give you shield points
+				combo_shield_health : 15
 			};
 
 			this.statistics = {
@@ -295,6 +298,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		Controller.prototype.processInput = function(input) {
 			if (this.checkForCombo(input)) {
 				this.showComboWonAnimation();
+				this.total_health_percent += this.game_settings.combo_shield_health;
 			}
 
 			this.entities = this.entities.filter(function(e) {
@@ -325,7 +329,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 		// get the start position for an enitiy randomly inside the screen rect on top
 		Controller.prototype.getStartPosition = function(narrow) {
-			var x_offset_to_composate_width = 50;
+			var x_offset_to_composate_width = 60;
 			if (narrow)
 				return new V2(between(this.screen_bounds.p1.x + x_offset_to_composate_width, this.screen_bounds.p2.x - x_offset_to_composate_width*2),
 					this.screen_bounds.p1.y + f.onscreen.size/2);
