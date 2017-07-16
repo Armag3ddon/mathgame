@@ -67,8 +67,8 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this.game_settings = {
 				// spawn am enemy every ms
 				enemy_delay : function() {
-					// with easy, this goes down from about 4 seconds initially
-					return Math.max(500, 3000 + (1/this.getDifficultyFactor() * 100));
+					// with easy, this goes down from about 3 seconds initially // -200 ms per level
+					return Math.max(500, 3000 - (this.getDifficultyFactor() * 2000));
 				}.bind(this),
 				// spawn a boss every ms
 				boss_delay: function() {
@@ -138,7 +138,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			};
 
 			this._enemy_delay = 0;
-			this._boss_delay = this.game_settings.boss_delay;
+			this._boss_delay = this.game_settings.boss_delay();
 			this._boss_active = false;
 
 			this.dieing = [];
@@ -155,7 +155,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 			this.current_combo_modifier = '+';
 
-			this.total_health_percent = 100;
+			this.total_health_percent = 1;
 			this._shield_down_delay = this.game_settings.shield_down_delay;
 
 		}
@@ -268,7 +268,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			if (entity.isBoss()) {
 				console.log("You got hit by: a boss!");
 				this._boss_active = false;
-				this._boss_delay = this.game_settings.boss_delay;
+				this._boss_delay = this.game_settings.boss_delay();
 				this.total_health_percent -= this.game_settings.boss_shield_down_damage;
 				this.statistics.boss_lost += 1;
 				this.parent.fail();
@@ -309,7 +309,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 						this.statistics.boss_solved += 1;
 						console.log('Boss kill!');
 						this._boss_active = false;
-						this._boss_delay = this.game_settings.boss_delay;
+						this._boss_delay = this.game_settings.boss_delay();
 						this.total_health_percent += this.game_settings.boss_shield_health;
 					} else {
 						this.total_health_percent += this.game_settings.enemy_shield_health;
