@@ -37,6 +37,13 @@ define(['config/config', 'config/screen', 'config/fonts'],
 
 				this.display.width = screen.w*this.scale;
 				this.display.height = screen.h*this.scale;
+
+				if ( screen.center ) {
+					this.display.style.top = '50%';
+					this.display.style.left = '50%';
+					this.display.style.marginTop = '-' + this.display.height/2 + 'px';
+					this.display.style.marginLeft = '-' + this.display.width/2 + 'px';
+				}
 			},
 
 			init: function(scene) {
