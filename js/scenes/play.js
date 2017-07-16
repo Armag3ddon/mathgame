@@ -167,6 +167,9 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                         this.add(anim);
                     }
                 }.bind(this));
+
+                this._eureka_cooldown = 0;
+                this.eureka_cooldown_time = 4000;
 			}
 
 			PlayScene.prototype = new Scene();
@@ -232,7 +235,10 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
             };
 
 			PlayScene.prototype.success = function () {
-				this.setStateForProgrammer('eureka');
+                if (this._eureka_cooldown < 0) {
+                    this.setStateForProgrammer('eureka');
+                    this._eureka_cooldown = this.eureka_cooldown_time;
+                }
 			};
 
 			PlayScene.prototype.fail = function () {
@@ -275,6 +281,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
 
                     }
                 }.bind(this));
+
+                this._eureka_cooldown -= delta;
 			};
 
 			return PlayScene;
