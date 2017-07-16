@@ -28,7 +28,7 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts', 'lib/animation',
             }
 
             this.entities.forEach(function(e) {
-                e.position.x -= 1;
+                e.position.x = e.position.x - (17  * 1/delta);
             }.bind(this));
 
             this.entities = this.entities.filter(function(e) {
