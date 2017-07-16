@@ -119,7 +119,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     speed: 100,
                     images: 26,
                     pos :  new V2(308, 549),
-                    still_frame: 0
+                    still_frame: 0,
+                    still_at_start: true
                 },
                 meteor : {
                     anim : GFX.GFX_METEOR,
@@ -131,13 +132,17 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     anim : GFX.GFX_PIPES,
                     speed: 100,
                     images: 26,
-                    pos :  Zero()
+                    pos :  Zero(),
+                    still_frame: 25,
+                    still_at_start: false
                 },
                 goo: {
                     anim : GFX.GFX_GOO,
                     speed: 100,
                     images: 16,
-                    pos :  new V2(33, 375)
+                    pos :  new V2(33, 375),
+                    still_frame: 15,
+                    still_at_start: false
                 }
             };
 
@@ -178,9 +183,14 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     if (e.still_frame !== undefined) {
                         var anim = new Animation('still_' + e.anim, e.anim, e.pos, e.images, 0, false);
                         anim.frame = e.still_frame;
+                        if (e.still_at_start === false) {
+                            anim.hidden = true;
+                        }
                         this.add(anim);
                     }
                 }.bind(this));
+
+                this.events_played = [];
 
                 this._eureka_cooldown = 0;
                 this.eureka_cooldown_time = 4000;
@@ -205,6 +215,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     this.event = new_event;
                     var evt = new Animation(new_event.anim, new_event.anim, new_event.pos, new_event.images, new_event.speed, false);
                     this.add(evt);
+                    this.events_played.push(new_event.anim);
 
                     if (new_event.still_frame) {
                         this.entities.forEach(function(e) {
@@ -285,12 +296,33 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 this.entities.forEach(function(e) {
                     if (typeof e.isAnimation === 'function' && e.isAnimation() && e.id.indexOf('still') !== -1) {
                         var real_id = e.id.substr(6, e.id.length);
-                        if (!this.entities.find(function(f) {
-                            return f.id === real_id;
-                        })) {
-                            e.hidden = false;
-                        } else {
-                            e.hidden = true;
+
+                        var event = EVENTS[Object.keys(EVENTS).find(function(name) {
+                            var e = EVENTS[name];
+                            return e.anim === real_id;
+                        })];
+
+                        // if still at start == true and animation does not run, show
+                        // if still at start == false and animation _did_ run, show
+
+                        if (event && event.still_at_start === true) {
+                            if (!this.entities.find(function (f) {
+                                    return f.id === real_id;
+                                })) {
+                                e.hidden = false;
+                            } else {
+                                e.hidden = true;
+                            }
+                        } else if (event && event.still_at_start === false) {
+                            if (this.events_played.indexOf(real_id) !== -1) {
+                                if (!this.entities.find(function (f) {
+                                        return f.id === real_id;
+                                    })) {
+                                    e.hidden = false;
+                                } else {
+                                    e.hidden = true;
+                                }
+                            }
                         }
 
                     }
