@@ -31,7 +31,9 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 GFX_SHIELD_100 : 'img/shield/shield_100.png',
                 GFX_CABLES_TOP : 'img/cables_animation.png',
                 GFX_COFFEE : 'img/KaffebecherRobo_spritesheet.png',
-                GFX_METEOR : 'img/meteor_animation.png'
+                GFX_METEOR : 'img/meteor_animation.png',
+                GFX_PIPES: 'img/rohr_spritesheet.png',
+                GFX_GOO : 'img/goo_animation.png'
             };
 
             Object.keys(GFX).forEach(function(k) {
@@ -124,6 +126,18 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     speed: 100,
                     images: 8,
                     pos :  new V2(1040, 70)
+                },
+                pipes: {
+                    anim : GFX.GFX_PIPES,
+                    speed: 100,
+                    images: 26,
+                    pos :  Zero()
+                },
+                goo: {
+                    anim : GFX.GFX_GOO,
+                    speed: 100,
+                    images: 16,
+                    pos :  new V2(33, 375)
                 }
             };
 
