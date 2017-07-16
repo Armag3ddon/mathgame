@@ -1,5 +1,5 @@
-define(['lib/scene', 'basic/button', 'core/game', 'geo/v2', 'transitions/slideinright', 'transitions/slideinleft', 'basic/morph', 'definition/easing', 'basic/layout', 'core/graphic'],
-	function(Scene, Button, game, V2, SlideInRightTransition, SlideInLeftTransition, Morph, Easing, Layout, g) {
+define(['lib/scene', 'basic/button', 'core/game', 'geo/v2', 'transitions/slideinright', 'transitions/slideinleft', 'transitions/slideinup', 'basic/morph', 'definition/easing', 'basic/layout', 'core/graphic'],
+	function(Scene, Button, game, V2, SlideInRightTransition, SlideInLeftTransition, SlideInUpTransition, Morph, Easing, Layout, g) {
 
 		g.add('img/menu_bg.png');
 		g.add('img/button_start.png');
@@ -24,7 +24,7 @@ define(['lib/scene', 'basic/button', 'core/game', 'geo/v2', 'transitions/slidein
 
             this.optionsButton = Button.create(new V2(650, 380),
 				function() {
-					game.scene = require('config/scenes').options;
+					game.scene = new SlideInUpTransition(require('config/scenes').options, 1000, Easing.OUTQUAD);
 				}
 			).img('img/button_options.png').hoverImg('img/button_options_hover.png');
 

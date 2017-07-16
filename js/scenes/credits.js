@@ -8,10 +8,11 @@ define(['lib/scene', 'entity/back', 'basic/text', 'geo/v2', 'core/graphic'],
 
 				this.bg = 'img/menu_bg.png';
 
-				this.center(new TextEntity(new V2(0, 100), "Max Mustermann"));
-				this.center(new TextEntity(new V2(0, 200), "Erica Mustemann"));
-				this.center(new TextEntity(new V2(0, 300), "Gunda Gamedesigner"));
-				this.center(new TextEntity(new V2(0, 400), "Peter Programmierer"));
+				this.center(new TextEntity(new V2(0, 100), "Judith Gastell"));
+				this.center(new TextEntity(new V2(0, 200), "Tamara Meyendriesch"));
+				this.center(new TextEntity(new V2(0, 300), "Andrea Kupsch"));
+				this.center(new TextEntity(new V2(0, 400), "Michael Lennartz"));
+				this.center(new TextEntity(new V2(0, 500), "Felix Wagner"));
 				this.center(BackButton('menu', true));
 			}
 
