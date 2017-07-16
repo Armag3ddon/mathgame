@@ -412,7 +412,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 		Controller.prototype.gameOver = function() {
 			game.scene = require('config/scenes').gameover;
-			game.scene.gameOver();
+			game.scene.gameOver(this.statistics);
 		};
 
 
