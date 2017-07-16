@@ -10,6 +10,7 @@ define(['basic/entity', 'core/graphic', 'geo/v2'],
 				this.anitime = 0;
 				this.frame = 0;
 				this.state = 0;
+				this.hidden = false;
 
 				Entity.call(this, pos, new V2(this.img.width / this.frames.x, this.img.height / this.frames.y ));
 			}
@@ -31,7 +32,8 @@ define(['basic/entity', 'core/graphic', 'geo/v2'],
 			};
 
 			Animation.prototype.onDraw = function(ctx) {
-				ctx.drawImage( this.img, this.frame*this.size.x, this.state*this.size.y, this.size.x, this.size.y, 0, 0, this.size.x, this.size.y );
+				if (!this.hidden)
+					ctx.drawImage( this.img, this.frame*this.size.x, this.state*this.size.y, this.size.x, this.size.y, 0, 0, this.size.x, this.size.y );
 			};
 
 			Animation.prototype.isAnimation = function() {

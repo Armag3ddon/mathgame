@@ -115,7 +115,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     anim : GFX.GFX_COFFEE,
                     speed: 100,
                     images: 26,
-                    pos :  new V2(308, 549)
+                    pos :  new V2(308, 549),
+                    still_frame: 0
                 }
             };
 
@@ -150,6 +151,15 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 this.add(this.shield_display);
 
                 this.event = null;
+
+                Object.keys(EVENTS).forEach(function(name) {
+                    var e = EVENTS[name];
+                    if (e.still_frame !== undefined) {
+                        var anim = new Animation('still_' + e.anim, e.anim, e.pos, e.images, 0, false);
+                        anim.frame = e.still_frame;
+                        this.add(anim);
+                    }
+                }.bind(this));
 			}
 
 			PlayScene.prototype = new Scene();
@@ -171,6 +181,14 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     this.event = new_event;
                     var evt = new Animation(new_event.anim, new_event.anim, new_event.pos, new_event.images, new_event.speed, false);
                     this.add(evt);
+
+                    if (new_event.still_frame) {
+                        this.entities.forEach(function(e) {
+                           if (e.id === 'still_' + new_event.anim) {
+                               e.hidden = true;
+                           }
+                        });
+                    }
                 }
             };
 
@@ -236,6 +254,20 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     if (this.programmer_state_name !== "normal")
                         this.setStateForProgrammer("normal");
                 }
+
+                this.entities.forEach(function(e) {
+                    if (typeof e.isAnimation === 'function' && e.isAnimation() && e.id.indexOf('still') !== -1) {
+                        var real_id = e.id.substr(6, e.id.length);
+                        if (!this.entities.find(function(f) {
+                            return f.id === real_id;
+                        })) {
+                            e.hidden = false;
+                        } else {
+                            e.hidden = true;
+                        }
+
+                    }
+                }.bind(this));
 			};
 
 			return PlayScene;
