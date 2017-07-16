@@ -22,7 +22,7 @@ define(['lib/scene', 'basic/button', 'basic/text', 'config/fonts', 'core/game', 
 
 			this.textSpeed = new Meter(new V2(195, 446), function(level) {
 				game.text_speed = level;
-			}, [0, 50, 100], ['Slow', 'Medium', 'Fast'], 0);
+			}, [0, 50, 100], ['Easy', 'Medium', 'Hard'], 0);
 			this.add(this.textSpeed);
 
 			this.add(new Checkbox(new V2(850, 225), "+", true, function(checked) {

@@ -73,7 +73,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				boss_ops : 2,
 				// speed (x and y direction)
 				enemy_speed : function() {
-					return new V2(0, between(20, 40) * this.getDifficultyFactor());
+					return new V2(0, between(20, 30) * this.getDifficultyFactor());
 				}.bind(this),
 				// boss speed is different (x and y direction)
 				boss_speed : function() {
@@ -102,7 +102,9 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				shield_down_delay : 1000,
 
 				// hits per time unit
-				shield_down_damage_percent : 1,
+				shield_down_damage_percent : function() {
+					return Math.max(1.5, 3 * this.getDifficultyFactor());
+				}.bind(this),
 
 				// enemy make extra damage
 				enemy_shield_down_damage : 2,
@@ -118,6 +120,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			};
 
 			this.statistics = {
+				level : game.text_speed,
 				score : 0,
 				enemy_solved : 1,
 				enemy_lost : 0,
@@ -187,7 +190,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			}
 
 			if (this._shield_down_delay <= 0) {
-				this.total_health_percent -= this.game_settings.shield_down_damage_percent;
+				this.total_health_percent -= this.game_settings.shield_down_damage_percent();
 				this._shield_down_delay = this.game_settings.shield_down_delay;
 				console.log("Sir, shields down to " + this.total_health_percent + " Percent !");
 				if (this.total_health_percent < 0) {

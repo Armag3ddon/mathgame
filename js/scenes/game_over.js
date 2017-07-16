@@ -22,10 +22,12 @@ define(['basic/button', 'basic/text', 'lib/scene', 'geo/v2', 'core/graphic', 'co
 
             this.font = f.onscreen;
 
+            this.diff = new TextEntity(new V2(500, 160), "", this.font);
             this.score = new TextEntity(new V2(500, 200), "", this.font);
             this.time = new TextEntity(new V2(500, 240), "", this.font);
             this.hits = new TextEntity(new V2(500, 280), "", this.font);
             this.miss = new TextEntity(new V2(500, 320), "", this.font);
+            this.add(this.diff);
             this.add(this.score);
             this.add(this.time);
             this.add(this.hits);
@@ -34,7 +36,11 @@ define(['basic/button', 'basic/text', 'lib/scene', 'geo/v2', 'core/graphic', 'co
 
         GameOverScene.prototype = new Scene();
 
+
+
 		GameOverScene.prototype.gameOver = function (statistics) {
+            var LEV = ["easy", "medium", "hard"];
+            this.diff.text = "On Level: " + LEV[statistics.level];
             this.score.text =  "Your Score: " + statistics.score;
             this.time.text = "Time survived: " + (statistics.time / 1000) + "s";
             this.hits.text = "Puzzels solved: " + (statistics.enemy_solved + statistics.boss_solved);
