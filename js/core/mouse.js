@@ -32,7 +32,7 @@ define(['geo/v2', 'core/game', 'config/config'], function (V2, game, config) {
 		};
 
 		gameframe.onmouseup = function (ev) {
-			if (game.scene.mouseup)
+			if (game.scene && game.scene.mouseup)
 				game.scene.mouseup(self);
 		};
 

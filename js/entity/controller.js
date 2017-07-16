@@ -148,7 +148,8 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this._diff_change = this.game_settings.diff_change_time;
 			this._current_diff = 0;
 
-			this.add(new LeftMonitor(new V2(515, 478), {}));
+			this.left_monitor = new LeftMonitor(new V2(515, 478), {});
+			this.add(this.left_monitor);
 			this.add(new RightMonitor(new V2(660, 478), {
 				size : new V2(200, 50)
 			}));
@@ -262,6 +263,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				speed : this.game_settings.boss_speed(),
 				operations : ops
 			}));
+			this.left_monitor.addBlock()
 		};
 
 		// Called when an enemy reaches the bottom line, player should be
@@ -273,6 +275,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				this.total_health_percent -= this.game_settings.boss_shield_down_damage;
 				this.statistics.boss_lost += 1;
 				this.parent.fail();
+				this.left_monitor.removeBlock();
 			} else {
 				console.log("You got hit by: a girl or boy or other dude");
 				this.statistics.enemy_lost += 1;
@@ -339,8 +342,10 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		};
 
 		Controller.prototype.addToDieing = function (enemy) {
-			if (enemy.isBoss())
+			if (enemy.isBoss()) {
 				this._boss_active = false;
+				this.left_monitor.removeBlock();
+			}
 			this.dieing.push (enemy);
 			this.hit_buffer++;
 		};
