@@ -29,7 +29,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 GFX_SHIELD_80 : 'img/shield/shield_80.png',
                 GFX_SHIELD_90 : 'img/shield/shield_90.png',
                 GFX_SHIELD_100 : 'img/shield/shield_100.png',
-                GFX_CABLES_TOP : 'img/cables_animation.png'
+                GFX_CABLES_TOP : 'img/cables_animation.png',
+                GFX_COFFEE : 'img/KaffebecherRobo_spritesheet.png'
             };
 
             Object.keys(GFX).forEach(function(k) {
@@ -109,6 +110,12 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     speed: 100,
                     images: 18,
                     pos :  new V2(149, 0)
+                },
+                coffee_cup: {
+                    anim : GFX.GFX_COFFEE,
+                    speed: 100,
+                    images: 26,
+                    pos :  new V2(308, 549)
                 }
             };
 

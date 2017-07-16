@@ -40,7 +40,7 @@ define(['basic/button', 'basic/text', 'lib/scene', 'geo/v2', 'core/graphic', 'co
 
 
 		GameOverScene.prototype.gameOver = function (statistics) {
-            var LEV = ["easy", "medium", "hard"];
+            var LEV = ["Easy", "Medium", "Hard"];
             this.diff.text = LEV[statistics.level];
             this.score.text = statistics.score;
             this.time.text = Math.round(statistics.time / 1000) + "s";

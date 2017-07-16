@@ -25,26 +25,36 @@ define(['lib/scene', 'basic/button', 'basic/text', 'config/fonts', 'core/game', 
 			}, [0, 50, 100], ['Easy', 'Medium', 'Hard'], 0);
 			this.add(this.textSpeed);
 
-			this.add(new Checkbox(new V2(850, 225), "+", true, function(checked) {
+			this.addition = new Checkbox(new V2(850, 225), "+", true, function(checked) {
 				game.operations[0] = checked;
-			}));
+				game.scene.checkedUnchecked();
+			});
+			this.add(this.addition);
 
 			this.add(new Checkbox(new V2(1000, 225), "-", true, function(checked) {
 				game.operations[1] = checked;
+				game.scene.checkedUnchecked();
 			}));
 
 			this.add(new Checkbox(new V2(850, 280), "x", true, function(checked) {
 				game.operations[2] = checked;
+				game.scene.checkedUnchecked();
 			}));
 
 			this.add(new Checkbox(new V2(1000, 280), "/", true, function(checked) {
 				game.operations[3] = checked;
+				game.scene.checkedUnchecked();
 			}));
 
-			this.center(BackButton('menu', false, true));
+			this.center(BackButton('menu', false, false, true));
 		}
 
 		OptionsScene.prototype = new Scene();
+
+		OptionsScene.prototype.checkedUnchecked = function () {
+			if (game.operations.every(function(e) { return !e; }))
+				this.addition.onClick();
+		}
 
 		return OptionsScene;
 	}

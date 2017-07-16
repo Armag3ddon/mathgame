@@ -128,7 +128,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			};
 
 			this.statistics = {
-				level : game.text_speed,
+				level : 0,
 				score : 0,
 				enemy_solved : 1,
 				enemy_lost : 0,
@@ -209,6 +209,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this.total_health_percent = Math.max(Math.min(this.total_health_percent, 100), 0);
 
 			this.statistics.time += delta;
+			this.statistics.level = game.text_speed;
 			this._diff_change -= delta;
 			this._shield_down_delay -= delta;
 
