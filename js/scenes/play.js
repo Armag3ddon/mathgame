@@ -30,7 +30,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 GFX_SHIELD_90 : 'img/shield/shield_90.png',
                 GFX_SHIELD_100 : 'img/shield/shield_100.png',
                 GFX_CABLES_TOP : 'img/cables_animation.png',
-                GFX_COFFEE : 'img/KaffebecherRobo_spritesheet.png'
+                GFX_COFFEE : 'img/KaffebecherRobo_spritesheet.png',
+                GFX_METEOR : 'img/meteor_animation.png'
             };
 
             Object.keys(GFX).forEach(function(k) {
@@ -117,6 +118,12 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     images: 26,
                     pos :  new V2(308, 549),
                     still_frame: 0
+                },
+                meteor : {
+                    anim : GFX.GFX_METEOR,
+                    speed: 100,
+                    images: 8,
+                    pos :  new V2(1040, 70)
                 }
             };
 
@@ -160,6 +167,9 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                         this.add(anim);
                     }
                 }.bind(this));
+
+                this._eureka_cooldown = 0;
+                this.eureka_cooldown_time = 4000;
 			}
 
 			PlayScene.prototype = new Scene();
@@ -225,7 +235,10 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
             };
 
 			PlayScene.prototype.success = function () {
-				this.setStateForProgrammer('eureka');
+                if (this._eureka_cooldown < 0) {
+                    this.setStateForProgrammer('eureka');
+                    this._eureka_cooldown = this.eureka_cooldown_time;
+                }
 			};
 
 			PlayScene.prototype.fail = function () {
@@ -268,6 +281,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
 
                     }
                 }.bind(this));
+
+                this._eureka_cooldown -= delta;
 			};
 
 			return PlayScene;

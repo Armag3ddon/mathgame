@@ -1,6 +1,8 @@
-define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
-    function(Entity, V2, TextEntity, f)
+define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts', 'lib/animation', 'core/graphic'],
+    function(Entity, V2, TextEntity, f, Animation, g)
     {
+		g.add('img/distort_animation.png');
+
         function LeftMonitor(pos, options) {
             Entity.call(this, pos);
 
@@ -9,6 +11,8 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
             //this.display = new TextEntity(Zero(), this.text, font);
 
             this.numbers = [];
+
+			this.blocked = new Animation('Distort', 'img/distort_animation.png', new V2(-222, -20), 4, 200, true);
 
             this.time_to_new_number = 650;
             this._time_number = 0;
@@ -24,7 +28,7 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
             }
 
             this.entities.forEach(function(e) {
-                e.position.x -= 1;
+                e.position.x = e.position.x - (17  * 1/delta);
             }.bind(this));
 
             this.entities = this.entities.filter(function(e) {
@@ -37,13 +41,20 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts'],
         LeftMonitor.prototype.addNumber = function() {
             var font = f.onscreen;
             var res = this.parent.getNumberForMonitor();
-            var t = new TextEntity(Zero(), res.val, font);
+            var t = new TextEntity(new V2(-5,0), res.val, font);
             if (!res.real) {
                 t.override_color = '#aa0000'
             }
             this.add(t);
         };
 
+		LeftMonitor.prototype.addBlock = function() {
+			this.block(this.blocked);
+		};
+
+		LeftMonitor.prototype.removeBlock = function () {
+			this.remove(this.blocked);
+		};
 
         return LeftMonitor;
     }

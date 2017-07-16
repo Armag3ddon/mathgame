@@ -9,6 +9,8 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts', 'definition/rand
             this.options = options;
             this.text = 'Combo modifier:';
             this.display = new TextEntity(Zero(), this.text, font);
+			this.display.frameColor = '#f0f80a';
+			this.flicker_buffer = 0;
 
             this.add(this.display);
 
@@ -24,7 +26,18 @@ define(['basic/entity', 'geo/v2', 'basic/text', 'config/fonts', 'definition/rand
                 this.addNewModifier();
                 this._time_number = this.time_to_new_modifier;
                 this.time_to_new_modifier = 3000 + R.betweenInt(1000, 4000);
-            }
+				this.flicker_buffer = 0;
+				this.display.effectFrame = false;
+            } else if (this._time_number <= 800) {
+				this.flicker_buffer += delta;
+				if (this.flicker_buffer <= 100) {
+					this.display.effectFrame = true;
+				} else {
+					this.display.effectFrame = false;
+					if (this.flicker_buffer >= 200)
+						this.flicker_buffer = 0;
+				}
+			}
 
             this._time_number -= delta;
         };
