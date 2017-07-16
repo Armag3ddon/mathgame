@@ -2,6 +2,7 @@ define(['lib/scene', 'basic/button', 'core/game', 'geo/v2', 'transitions/slidein
 	function(Scene, Button, game, V2, SlideInRightTransition, SlideInLeftTransition, SlideInUpTransition, Morph, Easing, Layout, g) {
 
 		g.add('img/menu_bg.png');
+		g.add('img/main_menu_bg.jpg');
 		g.add('img/button_start.png');
 		g.add('img/button_options.png');
 		g.add('img/button_help.png');
@@ -40,7 +41,7 @@ define(['lib/scene', 'basic/button', 'core/game', 'geo/v2', 'transitions/slidein
 				}
 			).img('img/button_help.png').hoverImg('img/button_help_hover.png');
 
-            this.bg = 'img/menu_bg.png';
+            this.bg = 'img/main_menu_bg.jpg';
             this.add(this.playButton);
             this.add(this.optionsButton);
             this.add(this.creditsButton);
