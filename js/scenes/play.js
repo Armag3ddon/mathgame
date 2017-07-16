@@ -15,7 +15,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 GFX_OHNO : 'img/ohno_engineer.png',
                 GFX_OHNO_BUBBLE : 'img/ohno_bubble.png',
                 GFX_POPUPS : 'img/popup_spritesheet.png',
-                GFX_TRIBBLE : 'img/tribble_spritesheet.png',
+                GFX_TRIBBLE : 'img/Tribble_spritesheet.png',
                 GFX_WINDOW_ANIM : 'img/animation_window.png',
                 GFX_WINDOW : 'img/window_overlay.png',
                 GFX_SHIELD_0 : 'img/shield/shield_0.png',

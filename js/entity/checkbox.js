@@ -1,6 +1,5 @@
 define(['basic/entity', 'geo/v2', 'basic/text', 'basic/image', 'lib/animation', 'config/fonts', 'core/graphic', 'core/sound'],
 	function(Entity, V2, TextEntity, ImageEntity, AnimationEntity, f, g, s) {
-		g.add('img/checkbox.png');
 		g.add('img/switch_on.png');
 		g.add('img/switch_off.png');
 		s.add('snd/click.mp3');
