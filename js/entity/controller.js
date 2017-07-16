@@ -155,7 +155,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 			this.current_combo_modifier = '+';
 
-			this.total_health_percent = 1;
+			this.total_health_percent = 100;
 			this._shield_down_delay = this.game_settings.shield_down_delay;
 
 		}
