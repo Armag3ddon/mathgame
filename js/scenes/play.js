@@ -33,7 +33,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 GFX_COFFEE : 'img/KaffebecherRobo_spritesheet.png',
                 GFX_METEOR : 'img/meteor_animation.png',
                 GFX_PIPES: 'img/rohr_spritesheet.png',
-                GFX_GOO : 'img/goo_animation.png'
+                GFX_GOO : 'img/goo_animation.png',
+                GFX_PLATE : 'img/plate_animation.png'
             };
 
             Object.keys(GFX).forEach(function(k) {
@@ -108,12 +109,6 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     images: 12,
                     pos :  new V2(1040, 70)
                 },
-                cables_top : {
-                    anim : GFX.GFX_CABLES_TOP,
-                    speed: 100,
-                    images: 18,
-                    pos :  new V2(149, 0)
-                },
                 coffee_cup: {
                     anim : GFX.GFX_COFFEE,
                     speed: 100,
@@ -142,6 +137,22 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     images: 16,
                     pos :  new V2(33, 375),
                     still_frame: 15,
+                    still_at_start: false
+                },
+                plate: {
+                    anim : GFX.GFX_PLATE,
+                    speed: 100,
+                    images: 10,
+                    pos :  new V2(1031, 428),
+                    still_frame: 9,
+                    still_at_start: false
+                },
+                cables_top : {
+                    anim : GFX.GFX_CABLES_TOP,
+                    speed: 100,
+                    images: 18,
+                    pos :  new V2(249, 0),
+                    still_frame: 17,
                     still_at_start: false
                 }
             };
