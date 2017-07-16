@@ -34,7 +34,8 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                 GFX_METEOR : 'img/meteor_animation.png',
                 GFX_PIPES: 'img/rohr_spritesheet.png',
                 GFX_GOO : 'img/goo_animation.png',
-                GFX_PLATE : 'img/plate_animation.png'
+                GFX_PLATE : 'img/plate_animation.png',
+                GFX_PLATE_FRONT : 'img/Platte_spritesheet.png'
             };
 
             Object.keys(GFX).forEach(function(k) {
@@ -154,7 +155,16 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     pos :  new V2(249, 0),
                     still_frame: 17,
                     still_at_start: false
+                },
+                plate_front : {
+                    anim : GFX.GFX_PLATE_FRONT,
+                    speed: 100,
+                    images: 10,
+                    pos :  new V2(1093, 609),
+                    still_frame: 9,
+                    still_at_start: false
                 }
+
             };
 
             var getRandomEvent = function() {
