@@ -1,12 +1,12 @@
 define(['lib/scene', 'entity/back', 'basic/text', 'geo/v2', 'core/graphic'],
 		function(Scene, BackButton, TextEntity, V2, g) {
 
-			g.add('img/menu_bg.png');
+			g.add('img/credits_bg.png');
 
 			function CreditsScene() {
 				Scene.call(this);
 
-				this.bg = 'img/menu_bg.png';
+				this.bg = 'img/credits_bg.png';
 
 				this.center(new TextEntity(new V2(0, 100), "Judith Gastell"));
 				this.center(new TextEntity(new V2(0, 200), "Tamara Meyendriesch"));
