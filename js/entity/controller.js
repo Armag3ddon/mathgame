@@ -66,18 +66,23 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 			this.game_settings = {
 				// spawn am enemy every ms
-				enemy_delay : 2000,
+				enemy_delay : function() {
+					// with easy, this goes down from about 4 seconds initially
+					return Math.max(500, 3000 + (1/this.getDifficultyFactor() * 100));
+				}.bind(this),
 				// spawn a boss every ms
-				boss_delay: 20000,
+				boss_delay: function() {
+					return 20000;
+				}.bind(this),
 				// nr od operations for a boss
 				boss_ops : 2,
 				// speed (x and y direction)
 				enemy_speed : function() {
-					return new V2(0, between(20, 30) * this.getDifficultyFactor());
+					return new V2(0, between(20, 20) * this.getDifficultyFactor());
 				}.bind(this),
 				// boss speed is different (x and y direction)
 				boss_speed : function() {
-					return new V2(0, between(10, 20) * this.getDifficultyFactor());
+					return new V2(0, between(5, 20) * this.getDifficultyFactor());
 				}.bind(this),
 
 				// height
@@ -116,7 +121,10 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 				boss_shield_down_damage : 7,
 
 				// but they also heal the shield much
-				boss_shield_health : 20
+				boss_shield_health : 20,
+
+				// combos give you shield points
+				combo_shield_health : 15
 			};
 
 			this.statistics = {
@@ -169,12 +177,12 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 			if (this._enemy_delay <= 0 && !this._boss_active) {
 				this.spawnEnemy();
-				this._enemy_delay = this.game_settings.enemy_delay;
+				this._enemy_delay = this.game_settings.enemy_delay();
 			}
 
 			if (this._boss_delay <= 0 && !this._boss_active) {
 				this.spawnBoss();
-				this._boss_delay = this.game_settings.boss_delay;
+				this._boss_delay = this.game_settings.boss_delay();
 				this._boss_active = true;
 			}
 
@@ -290,6 +298,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 		Controller.prototype.processInput = function(input) {
 			if (this.checkForCombo(input)) {
 				this.showComboWonAnimation();
+				this.total_health_percent += this.game_settings.combo_shield_health;
 			}
 
 			this.entities = this.entities.filter(function(e) {
@@ -320,7 +329,7 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 
 		// get the start position for an enitiy randomly inside the screen rect on top
 		Controller.prototype.getStartPosition = function(narrow) {
-			var x_offset_to_composate_width = 50;
+			var x_offset_to_composate_width = 60;
 			if (narrow)
 				return new V2(between(this.screen_bounds.p1.x + x_offset_to_composate_width, this.screen_bounds.p2.x - x_offset_to_composate_width*2),
 					this.screen_bounds.p1.y + f.onscreen.size/2);
