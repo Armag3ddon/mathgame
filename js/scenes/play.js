@@ -108,7 +108,7 @@ define(['lib/scene', 'geo/v2', 'core/graphic', 'core/sound', 'entity/controller'
                     anim : GFX.GFX_CABLES_TOP,
                     speed: 100,
                     images: 18,
-                    pos :  new V2(400, 0)
+                    pos :  new V2(149, 0)
                 }
             };
 
