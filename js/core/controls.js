@@ -12,6 +12,7 @@ define(['core/game'], function(game) {
 		},
 
 		translate: function( type, code ) {
+			console.log(code);
 			switch( code ) {
 				case 116: return true; break; // F5
 				case 32: this.emit( type, 'space' ); break;
