@@ -18,12 +18,18 @@ body {
 	z-index: 10;
 	text-align: center;
 	width: 300px;
+	height: 300px;
 	margin-left: -150px;
 	margin-top: -150px;
-	background: white;
-	border: 1px solid #333;
-	border-radius: 5px;
+	background: black;
+	color: white;
 	font-family: sans-serif;
 	font-weight: bold;
 	font-size: 14px;
+}
+
+#loadingLogo {
+	z-index: 11;
+	width: 284px;
+	height: 212px;
 }
