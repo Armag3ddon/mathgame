@@ -22,10 +22,15 @@ function(Entity, V2, TextEntity, ImageEntity, mouse, g, f, game) {
 		this.add(this.display);
 
 		this.callback = callback;
-		this.fixedPositions = fixedPositions;
-		this.fixedTexts = fixedTexts;
+		if (fixedPositions != undefined)
+			this.fixedPositions = fixedPositions;
+		if (fixedTexts != undefined)
+			this.fixedTexts = fixedTexts;
 		if (startVal != undefined)
-			this.setMeter(fixedPositions[startVal]);
+			if (fixedPositions != undefined)
+				this.setMeter(fixedPositions[startVal]);
+			else
+				this.setMeter(startVal);
 		else
 			this.setMeter(100);
 	}

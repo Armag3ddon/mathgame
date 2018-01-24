@@ -10,13 +10,13 @@ define(['lib/scene', 'basic/button', 'basic/text', 'config/fonts', 'core/game', 
 
 			this.soundVolume = new Meter(new V2(195, 230), function (level) {
 				game.sound_volume = level;
-			});
+			}, undefined, undefined, 20);
 			this.add(this.soundVolume);
 
 			this.musicVolume = new Meter(new V2(195, 334), function(level) {
 				document.getElementById('game_music').volume = level / 100;
 				document.getElementById('menu_music').volume = level / 100;
-			});
+			}, undefined, undefined, 20);
 			this.add(this.musicVolume);
 
 
