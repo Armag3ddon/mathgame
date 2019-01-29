@@ -148,11 +148,11 @@ define(['basic/entity', 'geo/v2', 'geo/rect', 'entity/enemy', 'entity/boss', 'de
 			this._diff_change = this.game_settings.diff_change_time;
 			this._current_diff = 0;
 
-			this.left_monitor = new LeftMonitor(new V2(515, 478), {});
+			/*this.left_monitor = new LeftMonitor(new V2(515, 478), {});
 			this.add(this.left_monitor);
 			this.add(new RightMonitor(new V2(660, 478), {
 				size : new V2(200, 50)
-			}));
+			}));*/
 
 			this.current_combo_modifier = '+';
 
